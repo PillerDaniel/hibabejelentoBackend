@@ -10,10 +10,10 @@ import Report from './Report';
 
 import { UserRole } from '../enums/UserRole';
 
-@Entity()
+@Entity('users')
 export default class User {
-    @PrimaryGeneratedColumn()
-    id!: number;
+    @PrimaryGeneratedColumn('uuid')
+    id!: string;
 
     @Column({ unique: true })
     username!: string;

@@ -12,10 +12,10 @@ import User from './User';
 import { ReportStatus } from '../enums/ReportStatus';
 import { ReportPriority } from '../enums/ReportPriority';
 
-@Entity()
+@Entity('reports')
 export default class Report {
-    @PrimaryGeneratedColumn()
-    id!: number;
+    @PrimaryGeneratedColumn('uuid')
+    id!: string;
 
     @Column()
     description!: string;
