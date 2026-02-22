@@ -2,8 +2,14 @@ import express from 'express';
 import { body, validationResult } from 'express-validator';
 import type { Request, Response } from 'express';
 
+import { container } from '../../application/services/DIContainer';
+
 import { AuthController } from '../controllers/authController';
-const authController: AuthController = new AuthController();
+
+//dependency injection
+const authController: AuthController = new AuthController(
+    container.createUserHandler
+);
 
 const router = express.Router();
 

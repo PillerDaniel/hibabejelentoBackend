@@ -5,7 +5,7 @@ import User from '../../domain/models/User';
 
 import { AppError } from '../../domain/errors/AppError';
 
-export class CreateUserHandler {
+export class CreateUserCommandHandler {
     constructor(private readonly userRepository: IUserRepository) {}
 
     async handle(cmd: CreateUserCommand): Promise<User> {
