@@ -22,8 +22,8 @@ export class LoginUserCommandHandler {
         if (!user) {
             throw new AppError(
                 401,
-                'Invalid username or password',
-                'Érvénytelen felhasználónév vagy jelszó'
+                'Invalid credentials.',
+                'A megadott adatokkal nem található felhasználó.'
             );
         }
         //pw validation
@@ -32,6 +32,15 @@ export class LoginUserCommandHandler {
         //pw check
         if (!isMatch) {
             throw new AppError(401, 'Invalid password', 'Helytelen jelszó');
+        }
+
+        //user inac
+        if (!user.active) {
+            throw new AppError(
+                401,
+                'Inactive user',
+                'A megadott felhasználó inaktív.'
+            );
         }
 
         //rediss sess
