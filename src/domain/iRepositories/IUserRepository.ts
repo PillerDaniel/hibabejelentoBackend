@@ -9,4 +9,5 @@ export interface IUserRepository {
         email: string,
         username: string
     ): Promise<User | null>;
+    findByUsername(username: string): Promise<User | null>;
 }

@@ -30,5 +30,8 @@ export class UserRepository implements IUserRepository {
         return user;
     }
 
-    //async update(id: number, userData: object) {}
+    async findByUsername(username: string): Promise<User | null> {
+        const user: User | null = await this.repo.findOneBy({ username });
+        return user;
+    }
 }

@@ -12,9 +12,12 @@ export class RedisSessionStore implements ISessionStore {
         this.ttlSeconds = ttlSeconds;
     }
 
+    private key(sid: string) {
+        return `session:${sid}`;
+    }
+
     async createSession(userId: string, role: string): Promise<string> {
         const sid = randomUUID();
-        const key = `session:${sid}`;
 
         const sessionData: SessionData = {
             userId,
@@ -22,19 +25,22 @@ export class RedisSessionStore implements ISessionStore {
             createdAt: new Date().toISOString(),
         };
         const client = getRedisClient();
-        await client.setEx(key, this.ttlSeconds, JSON.stringify(sessionData));
+        await client.setEx(
+            this.key(sid),
+            this.ttlSeconds,
+            JSON.stringify(sessionData)
+        );
         return sid;
     }
 
-    async getSession(sid: string): Promise<string | null> {
-        const key = `session:${sid}`;
+    async getSession(sid: string): Promise<SessionData | null> {
         const client = getRedisClient();
-        const sessionData = await client.get(key);
-        return sessionData;
+        const raw = await client.get(this.key(sid));
+        return JSON.parse(raw || 'null') as SessionData | null;
     }
 
     async deleteSession(sid: string): Promise<void> {
         const client = getRedisClient();
-        await client.del(`session:${sid}`);
+        await client.del(this.key(sid));
     }
 }

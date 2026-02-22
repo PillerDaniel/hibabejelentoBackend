@@ -8,6 +8,7 @@ import { RedisSessionStore } from '../../infrastructure/RedisSessionStore';
 
 //command handlers
 import { CreateUserCommandHandler } from '../commands/CreateUserCommandHandler';
+import { LoginUserCommandHandler } from '../commands/LoginUserCommandHandler';
 
 export class DIContainer {
     private static instance: DIContainer;
@@ -18,6 +19,7 @@ export class DIContainer {
 
     //handlers
     private _createUserCommandHandler: CreateUserCommandHandler | null = null;
+    private _loginUserHandler: LoginUserCommandHandler | null = null;
 
     private constructor() {}
 
@@ -49,6 +51,16 @@ export class DIContainer {
             );
         }
         return this._createUserCommandHandler;
+    }
+
+    public get loginUserHandler(): LoginUserCommandHandler {
+        if (!this._loginUserHandler) {
+            this._loginUserHandler = new LoginUserCommandHandler(
+                this.userRepository,
+                this.sessionStore
+            );
+        }
+        return this._loginUserHandler;
     }
 }
 

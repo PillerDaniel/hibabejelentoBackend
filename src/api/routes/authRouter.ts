@@ -8,7 +8,8 @@ import { AuthController } from '../controllers/authController';
 
 //dependency injection
 const authController: AuthController = new AuthController(
-    container.createUserHandler
+    container.createUserHandler,
+    container.loginUserHandler
 );
 
 const router = express.Router();
@@ -52,7 +53,6 @@ router.post(
             }),
     ],
     async (req: Request, res: Response) => {
-        console.log('Received registration request:', req.body);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({
@@ -62,5 +62,9 @@ router.post(
         return authController.register(req, res);
     }
 );
+
+router.post('/login', async (req: Request, res: Response) => {
+    return authController.login(req, res);
+});
 
 export default router;
