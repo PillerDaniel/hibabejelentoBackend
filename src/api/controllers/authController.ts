@@ -50,7 +50,6 @@ export class AuthController {
     async login(req: Request, res: Response) {
         try {
             const { username, password } = req.body;
-            console.log('Login request body:', req.body);
             if (!username || !password) {
                 return res.status(400).json({
                     messageHu: 'Minden mező kitöltése kötelező.',
