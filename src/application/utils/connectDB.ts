@@ -1,4 +1,4 @@
-import AppDataSource from '../infrastructure/db/dataSource';
+import AppDataSource from '../../infrastructure/db/dataSource';
 
 const connectDB = async (): Promise<void> => {
     try {

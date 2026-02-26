@@ -7,8 +7,8 @@ import cors from 'cors';
 //routes
 import authRouter from './api/routes/authRouter';
 
-import connectDB from './utils/connectDB';
-import { connectRedis } from './utils/connectRedis';
+import connectDB from './application/utils/connectDB';
+import { connectRedis } from './application/utils/connectRedis';
 
 const PORT = config.get<number>('PORT');
 const app: Application = express();

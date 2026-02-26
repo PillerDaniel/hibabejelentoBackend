@@ -3,7 +3,7 @@ import {
     ISessionStore,
     SessionData,
 } from '../domain/iRepositories/ISessionStore';
-import { getRedisClient } from '../utils/connectRedis';
+import { getRedisClient } from '../application/utils/connectRedis';
 
 export class RedisSessionStore implements ISessionStore {
     private ttlSeconds: number;
