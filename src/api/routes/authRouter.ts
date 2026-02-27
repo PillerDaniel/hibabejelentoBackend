@@ -6,10 +6,13 @@ import { container } from '../../application/services/DIContainer';
 
 import { AuthController } from '../controllers/authController';
 
+import authMiddleware from '../middlewares/authMiddleware';
+
 //dependency injection
 const authController: AuthController = new AuthController(
     container.createUserHandler,
-    container.loginUserHandler
+    container.loginUserHandler,
+    container.logOutCommandHandler
 );
 
 const router = express.Router();
@@ -65,6 +68,10 @@ router.post(
 
 router.post('/login', async (req: Request, res: Response) => {
     return authController.login(req, res);
+});
+
+router.post('/logout', authMiddleware, async (req: Request, res: Response) => {
+    return authController.logout(req, res);
 });
 
 export default router;

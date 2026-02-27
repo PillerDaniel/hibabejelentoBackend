@@ -8,7 +8,7 @@ import { getRedisClient } from '../application/utils/connectRedis';
 export class RedisSessionStore implements ISessionStore {
     private ttlSeconds: number;
 
-    constructor(ttlSeconds = 60 * 60 * 24 * 7) {
+    constructor(ttlSeconds = 60 * 60) {
         this.ttlSeconds = ttlSeconds;
     }
 

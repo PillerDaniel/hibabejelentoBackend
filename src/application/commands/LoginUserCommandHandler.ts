@@ -51,7 +51,12 @@ export class LoginUserCommandHandler {
 
         //jwt token
         const token = JWT.sign(
-            { sessionId, username: user.username },
+            {
+                sid: sessionId,
+                userId: user.id,
+                username: user.username,
+                role: user.role,
+            },
             JWT_SECRET,
             {
                 expiresIn: '1h',

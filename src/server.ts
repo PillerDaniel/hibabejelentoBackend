@@ -3,6 +3,7 @@ import express, { Application } from 'express';
 import type { Request, Response } from 'express';
 import config from 'config';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 //routes
 import authRouter from './api/routes/authRouter';
@@ -31,6 +32,7 @@ const startServer = async () => {
 
     app.use(cors(corsOptions));
     app.use(express.json());
+    app.use(cookieParser());
     app.use(logger);
 
     //routes

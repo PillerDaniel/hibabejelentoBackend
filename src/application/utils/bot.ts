@@ -45,7 +45,12 @@ const sendRunningMessage = async (message: string) => {
     }
 };
 
-const logRequest = async (endpoint: string, method: string) => {
+const logRequest = async (
+    endpoint: string,
+    method: string,
+    status: number,
+    userId: string
+) => {
     try {
         const channel = await client.channels.fetch(logRequestsChannelId);
         if (channel && channel.isTextBased()) {
@@ -53,7 +58,13 @@ const logRequest = async (endpoint: string, method: string) => {
                 .setTitle('<:botRequest:1476962224294858843> Request Log')
                 .addFields(
                     { name: 'Method:', value: method, inline: false },
-                    { name: 'Endpoint:', value: endpoint, inline: false }
+                    { name: 'Endpoint:', value: endpoint, inline: false },
+                    {
+                        name: 'Status:',
+                        value: status.toString(),
+                        inline: false,
+                    },
+                    { name: 'User ID:', value: userId, inline: false }
                 )
                 .setColor(0x00ff00)
                 .setTimestamp();
