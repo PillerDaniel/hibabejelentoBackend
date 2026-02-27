@@ -93,7 +93,6 @@ export class AuthController {
     async logout(req: Request, res: Response) {
         try {
             const sessionId = req.user?.sessionId;
-            console.log(req.user);
             if (sessionId) {
                 const cmd = new LogOutCommand(sessionId);
                 await this.logOutCommandHandler.handle(cmd);
