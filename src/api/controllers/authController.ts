@@ -73,6 +73,7 @@ export class AuthController {
             });
 
             res.status(200).json({
+                user: result.user,
                 messageHu: 'Sikeres bejelentkezés.',
                 messageEn: 'Login successful.',
             });
@@ -113,6 +114,25 @@ export class AuthController {
             res.status(500).json({
                 messageHu: 'Hiba a kijelentkezés során.',
                 messageEn: 'Error during logout.',
+                error: error.message,
+            });
+        }
+    }
+    async me(req: Request, res: Response) {
+        try {
+            if (!req.user) {
+                return res.status(401).json({
+                    messageHu: 'Nincs bejelentkezett felhasználó.',
+                    messageEn: 'Not authenticated.',
+                });
+            }
+            return res.status(200).json({
+                user: { username: req.user.username, role: req.user.role },
+            });
+        } catch (error: any) {
+            res.status(500).json({
+                messageHu: 'Hiba a felhasználó lekérdezése során.',
+                messageEn: 'Error retrieving user information.',
                 error: error.message,
             });
         }

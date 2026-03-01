@@ -74,4 +74,8 @@ router.post('/logout', authMiddleware, async (req: Request, res: Response) => {
     return authController.logout(req, res);
 });
 
+router.get('/me', authMiddleware, async (req: Request, res: Response) => {
+    return authController.me(req, res);
+});
+
 export default router;

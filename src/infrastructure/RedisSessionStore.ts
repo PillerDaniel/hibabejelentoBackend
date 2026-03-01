@@ -16,11 +16,16 @@ export class RedisSessionStore implements ISessionStore {
         return `session:${sid}`;
     }
 
-    async createSession(userId: string, role: string): Promise<string> {
+    async createSession(
+        userId: string,
+        role: string,
+        username: string
+    ): Promise<string> {
         const sid = randomUUID();
 
         const sessionData: SessionData = {
             userId,
+            username,
             role,
             createdAt: new Date().toISOString(),
         };

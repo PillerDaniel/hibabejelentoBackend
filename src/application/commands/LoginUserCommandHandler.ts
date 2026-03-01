@@ -16,7 +16,9 @@ export class LoginUserCommandHandler {
         private readonly userRepository: IUserRepository,
         private readonly sessionStore: ISessionStore
     ) {}
-    async handle(cmd: LoginUserCommand): Promise<{ token: string }> {
+    async handle(
+        cmd: LoginUserCommand
+    ): Promise<{ token: string; user: { username: string; role: string } }> {
         const user = await this.userRepository.findByUsername(cmd.username);
         //if user not found by username
         if (!user) {
@@ -46,16 +48,14 @@ export class LoginUserCommandHandler {
         //rediss sess
         const sessionId = await this.sessionStore.createSession(
             user.id,
-            user.role
+            user.role,
+            user.username
         );
 
         //jwt token
         const token = JWT.sign(
             {
                 sid: sessionId,
-                userId: user.id,
-                username: user.username,
-                role: user.role,
             },
             JWT_SECRET,
             {
@@ -63,6 +63,9 @@ export class LoginUserCommandHandler {
             }
         );
 
-        return { token: token };
+        return {
+            token: token,
+            user: { username: user.username, role: user.role },
+        };
     }
 }

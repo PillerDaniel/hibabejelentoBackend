@@ -7,7 +7,7 @@ const logger = async (req: Request, res: Response, next: NextFunction) => {
             const userId = req.user?.id || 'No User';
             const status = res.statusCode;
 
-            logRequest(req.method, req.originalUrl, status, userId);
+            logRequest(req.originalUrl, req.method, status, userId);
         });
 
         next();

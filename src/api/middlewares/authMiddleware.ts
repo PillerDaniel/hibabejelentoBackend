@@ -26,7 +26,6 @@ const authMiddleware = async (
 
         //decode
         const decoded = JWT.verify(token, JWT_SECRET) as any;
-        console.log(decoded);
 
         if (!decoded || !decoded.sid) {
             return res.status(401).json({
@@ -46,6 +45,7 @@ const authMiddleware = async (
         req.user = {
             id: session.userId,
             role: session.role,
+            username: session.username,
             sessionId: decoded.sid,
         };
         next();
