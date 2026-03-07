@@ -7,7 +7,13 @@ const logger = async (req: Request, res: Response, next: NextFunction) => {
             const userId = req.user?.id || 'No User';
             const status = res.statusCode;
 
-            logRequest(req.originalUrl, req.method, status, userId);
+            logRequest(
+                req.originalUrl,
+                req.method,
+                status,
+                userId,
+                req.headers['user-agent'] || 'Unknown User Agent'
+            );
         });
 
         next();

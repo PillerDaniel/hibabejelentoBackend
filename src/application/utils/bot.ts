@@ -49,7 +49,8 @@ const logRequest = async (
     endpoint: string,
     method: string,
     status: number,
-    userId: string
+    userId: string,
+    userAgent: string
 ) => {
     try {
         const channel = await client.channels.fetch(logRequestsChannelId);
@@ -64,7 +65,12 @@ const logRequest = async (
                         value: status.toString(),
                         inline: false,
                     },
-                    { name: 'User ID:', value: userId, inline: false }
+                    { name: 'User ID:', value: userId, inline: false },
+                    {
+                        name: 'User Agent:',
+                        value: userAgent || 'N/A',
+                        inline: false,
+                    }
                 )
                 .setColor(0x00ff00)
                 .setTimestamp();

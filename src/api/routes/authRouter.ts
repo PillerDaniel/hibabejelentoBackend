@@ -7,6 +7,7 @@ import { container } from '../../application/services/DIContainer';
 import { AuthController } from '../controllers/authController';
 
 import authMiddleware from '../middlewares/authMiddleware';
+import roleMiddleware from '../middlewares/roleMiddleware';
 
 //dependency injection
 const authController: AuthController = new AuthController(
@@ -55,6 +56,8 @@ router.post(
                 messageEn: 'Password must contain at least one number.',
             }),
     ],
+    authMiddleware,
+    roleMiddleware(['admin']),
     async (req: Request, res: Response) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
