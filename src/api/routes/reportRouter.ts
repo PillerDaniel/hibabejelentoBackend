@@ -20,7 +20,7 @@ const router = express.Router();
 router.get(
     '/user',
     authMiddleware,
-    roleMiddleware(['user']),
+    roleMiddleware(['user', 'admin']),
     async (req: Request, res: Response) => {
         reportController.getReportsByUser(req, res);
     }
