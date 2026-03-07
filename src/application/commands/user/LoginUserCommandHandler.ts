@@ -4,10 +4,10 @@ import config from 'config';
 
 import { LoginUserCommand } from './LoginUserCommand';
 
-import { IUserRepository } from '../../domain/iRepositories/IUserRepository';
-import { ISessionStore } from '../../domain/iRepositories/ISessionStore';
+import { IUserRepository } from '../../../domain/iRepositories/IUserRepository';
+import { ISessionStore } from '../../../domain/iRepositories/ISessionStore';
 
-import { AppError } from '../../domain/errors/AppError';
+import { AppError } from '../../../domain/errors/AppError';
 
 const JWT_SECRET = config.get<string>('JWT_SECRET');
 

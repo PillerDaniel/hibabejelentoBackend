@@ -18,9 +18,12 @@ export default class Report {
     id!: string;
 
     @Column()
+    title!: string;
+
+    @Column()
     description!: string;
 
-    @Column({ type: 'enum', enum: ReportStatus, default: ReportStatus.NEW })
+    @Column({ type: 'enum', enum: ReportStatus, default: ReportStatus.OPEN })
     status!: ReportStatus;
 
     @Column({ type: 'enum', enum: ReportPriority, default: ReportPriority.LOW })

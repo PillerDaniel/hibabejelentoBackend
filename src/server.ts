@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 
 //routes
 import authRouter from './api/routes/authRouter';
+import reportRouter from './api/routes/reportRouter';
 
 //middlewares
 import logger from './api/middlewares/logger';
@@ -37,6 +38,7 @@ const startServer = async () => {
 
     //routes
     app.use('/api/auth', authRouter);
+    app.use('/api/reports', reportRouter);
 
     app.get('/api', (req: Request, res: Response) => {
         res.send('API running');

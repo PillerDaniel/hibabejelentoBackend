@@ -5,12 +5,12 @@ import type { Request, Response } from 'express';
 import { AppError } from '../../domain/errors/AppError';
 
 //commands, handlers, queries
-import { CreateUserCommand } from '../../application/commands/CreateUserCommand';
-import { LoginUserCommand } from '../../application/commands/LoginUserCommand';
-import { LogOutCommand } from '../../application/commands/LogOutCommand';
-import { CreateUserCommandHandler } from '../../application/commands/CreateUserCommandHandler';
-import { LoginUserCommandHandler } from '../../application/commands/LoginUserCommandHandler';
-import { LogOutCommandHandler } from '../../application/commands/LogOutCommandHandler';
+import { CreateUserCommand } from '../../application/commands/user/CreateUserCommand';
+import { LoginUserCommand } from '../../application/commands/user/LoginUserCommand';
+import { LogOutCommand } from '../../application/commands/user/LogOutCommand';
+import { CreateUserCommandHandler } from '../../application/commands/user/CreateUserCommandHandler';
+import { LoginUserCommandHandler } from '../../application/commands/user/LoginUserCommandHandler';
+import { LogOutCommandHandler } from '../../application/commands/user/LogOutCommandHandler';
 
 export class AuthController {
     constructor(

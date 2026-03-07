@@ -1,15 +1,21 @@
 //interfaces
 import { IUserRepository } from '../../domain/iRepositories/IUserRepository';
 import { ISessionStore } from '../../domain/iRepositories/ISessionStore';
+import { IReportRepository } from '../../domain/iRepositories/IReportRepository';
 
 //repositories
 import { UserRepository } from '../../infrastructure/repositories/UserRepository';
 import { RedisSessionStore } from '../../infrastructure/RedisSessionStore';
+import { ReportRepository } from '../../infrastructure/repositories/ReportRepository';
 
 //command handlers
-import { CreateUserCommandHandler } from '../commands/CreateUserCommandHandler';
-import { LoginUserCommandHandler } from '../commands/LoginUserCommandHandler';
-import { LogOutCommandHandler } from '../commands/LogOutCommandHandler';
+import { CreateUserCommandHandler } from '../commands/user/CreateUserCommandHandler';
+import { LoginUserCommandHandler } from '../commands/user/LoginUserCommandHandler';
+import { LogOutCommandHandler } from '../commands/user/LogOutCommandHandler';
+
+//query handlers
+import { GetReportsByUserQueryHandler } from '../queries/report/GetReportsByUserQueryHandler';
+import { GetReportsForMaintainerQueryHandler } from '../queries/report/GetReportsForMaintainerQueryHandler';
 
 export class DIContainer {
     private static instance: DIContainer;
@@ -17,11 +23,18 @@ export class DIContainer {
     //repos
     private _userRepository: IUserRepository | null = null;
     private _sessionStore: ISessionStore | null = null;
+    private _reportRepository: IReportRepository | null = null;
 
-    //handlers
+    //command handlers
     private _createUserCommandHandler: CreateUserCommandHandler | null = null;
     private _loginUserHandler: LoginUserCommandHandler | null = null;
     private _logOutCommandHandler: LogOutCommandHandler | null = null;
+
+    //query handlers
+    private _getReportByUserQueryHandler: GetReportsByUserQueryHandler | null =
+        null;
+    private _getReportsForMaintainerQueryHandler: GetReportsForMaintainerQueryHandler | null =
+        null;
 
     private constructor() {}
 
@@ -32,11 +45,19 @@ export class DIContainer {
         return DIContainer.instance;
     }
 
+    //repositories
     public get userRepository(): IUserRepository {
         if (!this._userRepository) {
             this._userRepository = new UserRepository();
         }
         return this._userRepository;
+    }
+
+    public get reportRepository(): IReportRepository {
+        if (!this._reportRepository) {
+            this._reportRepository = new ReportRepository();
+        }
+        return this._reportRepository;
     }
 
     public get sessionStore(): ISessionStore {
@@ -46,6 +67,7 @@ export class DIContainer {
         return this._sessionStore;
     }
 
+    //command handlers
     public get createUserHandler(): CreateUserCommandHandler {
         if (!this._createUserCommandHandler) {
             this._createUserCommandHandler = new CreateUserCommandHandler(
@@ -72,6 +94,22 @@ export class DIContainer {
             );
         }
         return this._logOutCommandHandler;
+    }
+
+    //query handlers
+    public get getReportByUserQueryHandler(): GetReportsByUserQueryHandler {
+        if (!this._getReportByUserQueryHandler) {
+            this._getReportByUserQueryHandler =
+                new GetReportsByUserQueryHandler(this.reportRepository);
+        }
+        return this._getReportByUserQueryHandler;
+    }
+    public get getReportForMaintainerQueryHandler(): GetReportsForMaintainerQueryHandler {
+        if (!this._getReportsForMaintainerQueryHandler) {
+            this._getReportsForMaintainerQueryHandler =
+                new GetReportsForMaintainerQueryHandler(this.reportRepository);
+        }
+        return this._getReportsForMaintainerQueryHandler;
     }
 }
 

@@ -1,5 +1,5 @@
 export enum ReportStatus {
-    NEW = 'new',
+    OPEN = 'open',
     IN_PROGRESS = 'in progress',
     DONE = 'done',
 }

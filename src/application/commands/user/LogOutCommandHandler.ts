@@ -1,4 +1,4 @@
-import { ISessionStore } from '../../domain/iRepositories/ISessionStore';
+import { ISessionStore } from '../../../domain/iRepositories/ISessionStore';
 import { LogOutCommand } from './LogOutCommand';
 
 export class LogOutCommandHandler {

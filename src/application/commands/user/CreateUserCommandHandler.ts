@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
 import { CreateUserCommand } from './CreateUserCommand';
-import { IUserRepository } from '../../domain/iRepositories/IUserRepository';
-import User from '../../domain/models/User';
+import { IUserRepository } from '../../../domain/iRepositories/IUserRepository';
+import User from '../../../domain/models/User';
 
-import { AppError } from '../../domain/errors/AppError';
+import { AppError } from '../../../domain/errors/AppError';
 
 export class CreateUserCommandHandler {
     constructor(private readonly userRepository: IUserRepository) {}
