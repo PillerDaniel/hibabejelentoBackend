@@ -2,11 +2,13 @@
 import { IUserRepository } from '../../domain/iRepositories/IUserRepository';
 import { ISessionStore } from '../../domain/iRepositories/ISessionStore';
 import { IReportRepository } from '../../domain/iRepositories/IReportRepository';
+import { ICategoryRepository } from '../../domain/iRepositories/ICategoryRepository';
 
 //repositories
 import { UserRepository } from '../../infrastructure/repositories/UserRepository';
 import { RedisSessionStore } from '../../infrastructure/RedisSessionStore';
 import { ReportRepository } from '../../infrastructure/repositories/ReportRepository';
+import { CategoryRepository } from '../../infrastructure/repositories/CategoryRepository';
 
 //command handlers
 import { CreateUserCommandHandler } from '../commands/user/CreateUserCommandHandler';
@@ -16,6 +18,7 @@ import { LogOutCommandHandler } from '../commands/user/LogOutCommandHandler';
 //query handlers
 import { GetReportsByUserQueryHandler } from '../queries/report/GetReportsByUserQueryHandler';
 import { GetReportsForMaintainerQueryHandler } from '../queries/report/GetReportsForMaintainerQueryHandler';
+import { GetAllCategoryQueryHandler } from '../queries/category/GetAllCategoryQueryHandler';
 
 export class DIContainer {
     private static instance: DIContainer;
@@ -24,7 +27,7 @@ export class DIContainer {
     private _userRepository: IUserRepository | null = null;
     private _sessionStore: ISessionStore | null = null;
     private _reportRepository: IReportRepository | null = null;
-
+    private _categoryRepository: ICategoryRepository | null = null;
     //command handlers
     private _createUserCommandHandler: CreateUserCommandHandler | null = null;
     private _loginUserHandler: LoginUserCommandHandler | null = null;
@@ -34,6 +37,8 @@ export class DIContainer {
     private _getReportByUserQueryHandler: GetReportsByUserQueryHandler | null =
         null;
     private _getReportsForMaintainerQueryHandler: GetReportsForMaintainerQueryHandler | null =
+        null;
+    private _getAllCategoryQueryHandler: GetAllCategoryQueryHandler | null =
         null;
 
     private constructor() {}
@@ -58,6 +63,13 @@ export class DIContainer {
             this._reportRepository = new ReportRepository();
         }
         return this._reportRepository;
+    }
+
+    public get categoryRepository(): ICategoryRepository {
+        if (!this._categoryRepository) {
+            this._categoryRepository = new CategoryRepository();
+        }
+        return this._categoryRepository;
     }
 
     public get sessionStore(): ISessionStore {
@@ -110,6 +122,14 @@ export class DIContainer {
                 new GetReportsForMaintainerQueryHandler(this.reportRepository);
         }
         return this._getReportsForMaintainerQueryHandler;
+    }
+    public get getAllCategoryQueryHandler(): GetAllCategoryQueryHandler {
+        if (!this._getAllCategoryQueryHandler) {
+            this._getAllCategoryQueryHandler = new GetAllCategoryQueryHandler(
+                this.categoryRepository
+            );
+        }
+        return this._getAllCategoryQueryHandler;
     }
 }
 
