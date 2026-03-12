@@ -12,7 +12,8 @@ import roleMiddleware from '../middlewares/roleMiddleware';
 //dependency injection
 const reportController: ReportController = new ReportController(
     container.getReportByUserQueryHandler,
-    container.getReportForMaintainerQueryHandler
+    container.getReportForMaintainerQueryHandler,
+    container.createReportCommandHandler
 );
 
 const router = express.Router();
@@ -34,4 +35,14 @@ router.get(
         reportController.getReportsForMaintainer(req, res);
     }
 );
+
+router.post(
+    '/',
+    authMiddleware,
+    roleMiddleware(['user', 'admin']),
+    async (req: Request, res: Response) => {
+        reportController.createReport(req, res);
+    }
+);
+
 export default router;

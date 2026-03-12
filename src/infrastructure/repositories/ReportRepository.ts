@@ -97,4 +97,21 @@ export class ReportRepository implements IReportRepository {
 
         return { reports: reports, total };
     }
+
+    async createReport(
+        userId: string,
+        categoryId: string,
+        title: string,
+        description: string,
+        priority: number
+    ): Promise<Report> {
+        const report = this.repo.create({
+            reportedBy: { id: userId },
+            category: { id: categoryId },
+            title,
+            description,
+            priority,
+        });
+        return await this.repo.save(report);
+    }
 }
