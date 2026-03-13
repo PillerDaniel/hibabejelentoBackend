@@ -13,7 +13,8 @@ import roleMiddleware from '../middlewares/roleMiddleware';
 const reportController: ReportController = new ReportController(
     container.getReportByUserQueryHandler,
     container.getReportForMaintainerQueryHandler,
-    container.createReportCommandHandler
+    container.createReportCommandHandler,
+    container.editReportStatusCommandHandler
 );
 
 const router = express.Router();
@@ -42,6 +43,15 @@ router.post(
     roleMiddleware(['user', 'admin']),
     async (req: Request, res: Response) => {
         reportController.createReport(req, res);
+    }
+);
+
+router.patch(
+    '/:id',
+    authMiddleware,
+    roleMiddleware(['maintainer', 'admin']),
+    async (req: Request, res: Response) => {
+        reportController.editReportStatus(req, res);
     }
 );
 

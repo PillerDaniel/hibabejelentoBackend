@@ -1,6 +1,8 @@
 import { IReportRepository } from '../../domain/iRepositories/IReportRepository';
 import Report from '../../domain/models/Report';
+import { ReportStatus } from '../../domain/enums/ReportStatus';
 import dataSource from '../db/dataSource';
+import { AppError } from '../../domain/errors/AppError';
 export class ReportRepository implements IReportRepository {
     repo = dataSource.getRepository(Report);
 
@@ -112,6 +114,36 @@ export class ReportRepository implements IReportRepository {
             description,
             priority,
         });
+        return await this.repo.save(report);
+    }
+
+    async updateReportStatus(
+        reportId: string,
+        status: ReportStatus,
+        userId: string
+    ): Promise<Report | null> {
+        const report = await this.repo.findOne({
+            where: { id: reportId },
+            relations: ['managedBy'],
+        });
+
+        if (!report) {
+            return null;
+        }
+
+        if (report.managedBy && report.managedBy.id !== userId) {
+            return null;
+        }
+
+        if (report.status === status) {
+            throw new AppError(
+                400,
+                'Report is already in this status',
+                'A  hibajegy már ebben az státuszban van'
+            );
+        }
+
+        report.status = status;
         return await this.repo.save(report);
     }
 }

@@ -15,6 +15,7 @@ import { CreateUserCommandHandler } from '../commands/user/CreateUserCommandHand
 import { LoginUserCommandHandler } from '../commands/user/LoginUserCommandHandler';
 import { LogOutCommandHandler } from '../commands/user/LogOutCommandHandler';
 import { CreateReportCommandHandler } from '../commands/report/CreateReportCommandHandler';
+import { EditReportStatusCommandHandler } from '../commands/report/EditReportStatusCommandHandler';
 
 //query handlers
 import { GetReportsByUserQueryHandler } from '../queries/report/GetReportsByUserQueryHandler';
@@ -34,6 +35,8 @@ export class DIContainer {
     private _loginUserHandler: LoginUserCommandHandler | null = null;
     private _logOutCommandHandler: LogOutCommandHandler | null = null;
     private _createReportCommandHandler: CreateReportCommandHandler | null =
+        null;
+    private _editReportStatusCommandHandler: EditReportStatusCommandHandler | null =
         null;
 
     //query handlers
@@ -118,6 +121,14 @@ export class DIContainer {
             );
         }
         return this._createReportCommandHandler;
+    }
+
+    public get editReportStatusCommandHandler(): EditReportStatusCommandHandler {
+        if (!this._editReportStatusCommandHandler) {
+            this._editReportStatusCommandHandler =
+                new EditReportStatusCommandHandler(this.reportRepository);
+        }
+        return this._editReportStatusCommandHandler;
     }
 
     //query handlers

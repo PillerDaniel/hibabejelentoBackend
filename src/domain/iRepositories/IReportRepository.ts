@@ -1,3 +1,4 @@
+import { ReportStatus } from '../enums/ReportStatus';
 import Report from '../models/Report';
 
 export interface IReportRepository {
@@ -25,4 +26,10 @@ export interface IReportRepository {
         description: string,
         priority: number
     ): Promise<Report>;
+
+    updateReportStatus(
+        reportId: string,
+        status: ReportStatus,
+        userId: string
+    ): Promise<Report | null>;
 }

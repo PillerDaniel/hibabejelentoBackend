@@ -3,19 +3,27 @@ import type { Request, Response } from 'express';
 
 import { AppError } from '../../domain/errors/AppError';
 
+import { ReportStatus } from '../../domain/enums/ReportStatus';
+
 //commands, handlers, queries
 import { GetReportsByUserQueryHandler } from '../../application/queries/report/GetReportsByUserQueryHandler';
 import { GetReportByUserQuery } from '../../application/queries/report/GetReportsByUserQuery';
+
 import { GetReportsForMaintainerQueryHandler } from '../../application/queries/report/GetReportsForMaintainerQueryHandler';
 import { GetReportsForMaintainerQuery } from '../../application/queries/report/GetReportsForMaintainerQuery';
+
 import { CreateReportCommandHandler } from '../../application/commands/report/CreateReportCommandHandler';
 import { CreateReportCommand } from '../../application/commands/report/CreateReportCommand';
+
+import { EditReportStatusCommand } from '../../application/commands/report/EditReportStatusCommand';
+import { EditReportStatusCommandHandler } from '../../application/commands/report/EditReportStatusCommandHandler';
 
 export class ReportController {
     constructor(
         private readonly getReportByUserQueryHandler: GetReportsByUserQueryHandler,
         private readonly getReportForMaintainerQueryHandler: GetReportsForMaintainerQueryHandler,
-        private readonly createReportCommandHandler: CreateReportCommandHandler
+        private readonly createReportCommandHandler: CreateReportCommandHandler,
+        private readonly editReportStatusCommandHandler: EditReportStatusCommandHandler
     ) {}
 
     async getReportsByUser(req: Request, res: Response) {
@@ -108,6 +116,67 @@ export class ReportController {
                 messageHu: 'Hibajegy sikeresen létrehoozva.',
                 report: {
                     id: report.id,
+                },
+            });
+        } catch (error: any) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.messageEn,
+                    messageHu: error.messageHu,
+                });
+            }
+
+            return res.status(500).json({
+                message: 'Server error',
+                err: error.message,
+            });
+        }
+    }
+
+    async editReportStatus(req: Request, res: Response) {
+        try {
+            const userId = req.user!.id;
+            const reportId = req.params.id as string;
+            const { status } = req.body;
+
+            if (!status) {
+                throw new AppError(
+                    400,
+                    'Missing required fields',
+                    'Minden mező kitöltése kötelező.'
+                );
+            }
+
+            if (!Object.values(ReportStatus).includes(status as ReportStatus)) {
+                throw new AppError(
+                    400,
+                    'Invalid status value',
+                    'Érvénytelen státusz érték.'
+                );
+            }
+
+            const result = await this.editReportStatusCommandHandler.handle(
+                new EditReportStatusCommand(
+                    reportId,
+                    status as ReportStatus,
+                    userId
+                )
+            );
+
+            if (result === null) {
+                throw new AppError(
+                    404,
+                    'Report not found.',
+                    'Hibajegy nem található.'
+                );
+            }
+
+            return res.status(200).json({
+                messageEn: 'Report status updated successfully',
+                messageHu: 'Hibajegy státusza sikeresen frissítve.',
+                report: {
+                    id: result.id,
+                    status: result.status,
                 },
             });
         } catch (error: any) {
