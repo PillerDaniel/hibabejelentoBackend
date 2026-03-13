@@ -9,7 +9,8 @@ export class GetReportsForMaintainerQueryHandler {
             query.limit,
             query.status,
             query.priority,
-            query.managed
+            query.managed,
+            query.categoryId
         );
         return reports;
     }

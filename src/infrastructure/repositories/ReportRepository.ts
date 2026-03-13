@@ -11,7 +11,8 @@ export class ReportRepository implements IReportRepository {
         page: number,
         limit: number,
         status?: string,
-        priority?: number
+        priority?: number,
+        categoryId?: string
     ): Promise<{ reports: Report[]; total: number }> {
         const skip = (page - 1) * limit;
         const whereConditions: any = { reportedBy: { id: userId } };
@@ -20,6 +21,9 @@ export class ReportRepository implements IReportRepository {
         }
         if (priority !== undefined) {
             whereConditions.priority = priority;
+        }
+        if (categoryId) {
+            whereConditions.category = { id: categoryId };
         }
         const [reports, total]: [Report[], number] =
             await this.repo.findAndCount({
@@ -56,7 +60,8 @@ export class ReportRepository implements IReportRepository {
         limit: number,
         status?: string,
         priority?: number,
-        managed?: string
+        managed?: string,
+        categoryId?: string
     ): Promise<{ reports: Report[]; total: number }> {
         const skip = (page - 1) * limit;
         const whereConditions: any = {};
@@ -68,6 +73,9 @@ export class ReportRepository implements IReportRepository {
         }
         if (priority !== undefined) {
             whereConditions.priority = priority;
+        }
+        if (categoryId) {
+            whereConditions.category = { id: categoryId };
         }
 
         const [reports, total]: [Report[], number] =

@@ -5,6 +5,7 @@ export class GetReportsForMaintainerQuery {
         public limit: number,
         public status?: string,
         public priority?: number,
-        public managed?: string
+        public managed?: string,
+        public categoryId?: string
     ) {}
 }

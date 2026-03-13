@@ -38,9 +38,17 @@ export class ReportController {
             const status = req.query.status as string;
             const priority =
                 parseInt(req.query.priority as string) || undefined;
+            const categoryId = (req.query.categoryId as string) || undefined;
 
             const result = await this.getReportByUserQueryHandler.handle(
-                new GetReportByUserQuery(userId, page, limit, status, priority)
+                new GetReportByUserQuery(
+                    userId,
+                    page,
+                    limit,
+                    status,
+                    priority,
+                    categoryId
+                )
             );
             return res.status(200).json({
                 reports: result.reports,
@@ -66,6 +74,7 @@ export class ReportController {
             const priority =
                 parseInt(req.query.priority as string) || undefined;
             const managed = (req.query.managed as string) || 'false';
+            const categoryId = (req.query.categoryId as string) || undefined;
 
             const result = await this.getReportForMaintainerQueryHandler.handle(
                 new GetReportsForMaintainerQuery(
@@ -74,7 +83,8 @@ export class ReportController {
                     limit,
                     status,
                     priority,
-                    managed
+                    managed,
+                    categoryId
                 )
             );
             return res.status(200).json({

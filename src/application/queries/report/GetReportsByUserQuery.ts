@@ -4,6 +4,7 @@ export class GetReportByUserQuery {
         public page: number = 1,
         public limit: number = 12,
         public status?: string,
-        public priority?: number
+        public priority?: number,
+        public categoryId?: string
     ) {}
 }

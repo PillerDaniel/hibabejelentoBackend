@@ -10,7 +10,8 @@ export class GetReportsByUserQueryHandler {
             query.page,
             query.limit,
             query.status,
-            query.priority
+            query.priority,
+            query.categoryId
         );
         return reports;
     }

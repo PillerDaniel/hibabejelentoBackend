@@ -7,7 +7,8 @@ export interface IReportRepository {
         page: number,
         limit: number,
         status?: string,
-        priority?: number
+        priority?: number,
+        categoryId?: string
     ): Promise<{ reports: Report[]; total: number }>;
 
     getReportsForMaintaner(
@@ -16,7 +17,8 @@ export interface IReportRepository {
         limit: number,
         status?: string,
         priority?: number,
-        managed?: string
+        managed?: string,
+        categoryId?: string
     ): Promise<{ reports: Report[]; total: number }>;
 
     createReport(
