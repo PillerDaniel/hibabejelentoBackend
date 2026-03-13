@@ -37,24 +37,6 @@ router.post(
             messageHu: 'Érvénytelen email cím.',
             messageEn: 'Invalid email address.',
         }),
-        body('password')
-            .isLength({ min: 8 })
-            .withMessage({
-                messageHu: 'A jelszónak legalább 8 karakterből kell állnia.',
-                messageEn: 'Password must be at least 8 characters.',
-            })
-            .matches(/[A-Z]/)
-            .withMessage({
-                messageHu:
-                    'A jelszónak legalább egy nagybetűt kell tartalmaznia.',
-                messageEn:
-                    'Password must contain at least one uppercase letter.',
-            })
-            .matches(/\d/)
-            .withMessage({
-                messageHu: 'A jelszónak legalább egy számot kell tartalmaznia.',
-                messageEn: 'Password must contain at least one number.',
-            }),
     ],
     authMiddleware,
     roleMiddleware(['admin']),

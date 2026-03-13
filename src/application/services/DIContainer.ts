@@ -100,7 +100,8 @@ export class DIContainer {
     public get createUserHandler(): CreateUserCommandHandler {
         if (!this._createUserCommandHandler) {
             this._createUserCommandHandler = new CreateUserCommandHandler(
-                this.userRepository
+                this.userRepository,
+                this.emailService
             );
         }
         return this._createUserCommandHandler;

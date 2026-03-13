@@ -21,15 +21,15 @@ export class AuthController {
 
     async register(req: Request, res: Response) {
         try {
-            const { username, firstName, lastName, email, password } = req.body;
+            const { username, firstName, lastName, email } = req.body;
 
             const cmd = new CreateUserCommand(
                 username,
                 firstName,
                 lastName,
-                email,
-                password
+                email
             );
+
             const user = await this.createUserCommandHandler.handle(cmd);
             res.status(201).json({
                 messageHu: 'Sikeres regisztráció.',

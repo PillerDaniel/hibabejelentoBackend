@@ -11,6 +11,7 @@ const token = config.get<string>('DISCORD_TOKEN');
 //channels
 const runnningChannelId = config.get<string>('RUNNING_CHANNEL');
 const logRequestsChannelId = config.get<string>('REQUEST_LOG_CHANNEL');
+const emailErrorChannelId = config.get<string>('EMAILERROR_LOG_CHANNEL');
 
 const client = new Client({
     intents: [GatewayIntentBits.Guilds],
@@ -85,4 +86,27 @@ const logRequest = async (
     }
 };
 
-export { startBot, logRequest };
+const logEmailError = async (title: string, err: any) => {
+    try {
+        const channel = await client.channels.fetch(emailErrorChannelId);
+        if (channel && channel.isTextBased()) {
+            const embed = new EmbedBuilder()
+                .setTitle('<:botEmailError:1482098634026778684> Email Error')
+                .addFields(
+                    { name: 'Title:', value: title, inline: false },
+                    { name: 'Error:', value: err, inline: false }
+                )
+                .setColor(0xff0000)
+                .setTimestamp();
+            await (channel as TextChannel).send({ embeds: [embed] });
+        } else {
+            console.error(
+                'Log requests channel not found or is not text-based'
+            );
+        }
+    } catch (error) {
+        console.error('Error sending message to request channel', error);
+    }
+};
+
+export { startBot, logRequest, logEmailError };
