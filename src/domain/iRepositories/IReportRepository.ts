@@ -32,4 +32,9 @@ export interface IReportRepository {
         status: ReportStatus,
         userId: string
     ): Promise<Report | null>;
+
+    assignReport(
+        reportId: string,
+        maintainerId: string
+    ): Promise<Report | null>;
 }

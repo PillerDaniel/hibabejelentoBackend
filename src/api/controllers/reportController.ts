@@ -18,12 +18,16 @@ import { CreateReportCommand } from '../../application/commands/report/CreateRep
 import { EditReportStatusCommand } from '../../application/commands/report/EditReportStatusCommand';
 import { EditReportStatusCommandHandler } from '../../application/commands/report/EditReportStatusCommandHandler';
 
+import { AssignReportToMaintainerCommand } from '../../application/commands/report/AssignReportToMaintainerCommand';
+import { AssignReportToMaintainerCommandHandler } from '../../application/commands/report/AssignReportToMaintainerCommandHandler';
+
 export class ReportController {
     constructor(
         private readonly getReportByUserQueryHandler: GetReportsByUserQueryHandler,
         private readonly getReportForMaintainerQueryHandler: GetReportsForMaintainerQueryHandler,
         private readonly createReportCommandHandler: CreateReportCommandHandler,
-        private readonly editReportStatusCommandHandler: EditReportStatusCommandHandler
+        private readonly editReportStatusCommandHandler: EditReportStatusCommandHandler,
+        private readonly assignReportToMaintainerCommandHandler: AssignReportToMaintainerCommandHandler
     ) {}
 
     async getReportsByUser(req: Request, res: Response) {
@@ -177,6 +181,45 @@ export class ReportController {
                 report: {
                     id: result.id,
                     status: result.status,
+                },
+            });
+        } catch (error: any) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    message: error.messageEn,
+                    messageHu: error.messageHu,
+                });
+            }
+
+            return res.status(500).json({
+                message: 'Server error',
+                err: error.message,
+            });
+        }
+    }
+    async assignReportToMaintainer(req: Request, res: Response) {
+        try {
+            const userId = req.user!.id;
+            const reportId = req.params.id as string;
+
+            const result =
+                await this.assignReportToMaintainerCommandHandler.handle(
+                    new AssignReportToMaintainerCommand(reportId, userId)
+                );
+
+            if (result === null) {
+                throw new AppError(
+                    404,
+                    'Report not found.',
+                    'Hibajegy nem található.'
+                );
+            }
+
+            return res.status(200).json({
+                messageEn: 'Report assigned successfully',
+                messageHu: 'Hibajegy sikeresen hozzárendelve.',
+                report: {
+                    id: result.id,
                 },
             });
         } catch (error: any) {

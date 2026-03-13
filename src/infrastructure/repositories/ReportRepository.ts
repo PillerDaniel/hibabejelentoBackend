@@ -143,7 +143,37 @@ export class ReportRepository implements IReportRepository {
             );
         }
 
+        if (status === ReportStatus.OPEN) {
+            report.managedBy = null;
+        }
+
         report.status = status;
+        return await this.repo.save(report);
+    }
+
+    async assignReport(
+        reportId: string,
+        maintainerId: string
+    ): Promise<Report | null> {
+        const report = await this.repo.findOne({
+            where: { id: reportId },
+            relations: ['managedBy'],
+        });
+
+        if (!report) {
+            return null;
+        }
+
+        if (report.managedBy !== null) {
+            throw new AppError(
+                400,
+                'Report is already assigned',
+                'A hibajegyet már kezelik'
+            );
+        }
+
+        report.status = ReportStatus.IN_PROGRESS;
+        report.managedBy = { id: maintainerId } as any;
         return await this.repo.save(report);
     }
 }
