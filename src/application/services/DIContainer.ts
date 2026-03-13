@@ -23,6 +23,11 @@ import { GetReportsByUserQueryHandler } from '../queries/report/GetReportsByUser
 import { GetReportsForMaintainerQueryHandler } from '../queries/report/GetReportsForMaintainerQueryHandler';
 import { GetAllCategoryQueryHandler } from '../queries/category/GetAllCategoryQueryHandler';
 
+//IServices
+import { IEmailService } from '../../domain/IServices/IEmailService';
+//services
+import { EmailService } from './EmailService';
+
 export class DIContainer {
     private static instance: DIContainer;
 
@@ -49,6 +54,9 @@ export class DIContainer {
         null;
     private _getAllCategoryQueryHandler: GetAllCategoryQueryHandler | null =
         null;
+
+    //services
+    private _emailService: IEmailService | null = null;
 
     private constructor() {}
 
@@ -166,6 +174,14 @@ export class DIContainer {
             );
         }
         return this._getAllCategoryQueryHandler;
+    }
+
+    //services
+    public get emailService(): IEmailService {
+        if (!this._emailService) {
+            this._emailService = new EmailService();
+        }
+        return this._emailService;
     }
 }
 
