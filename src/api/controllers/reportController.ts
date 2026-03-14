@@ -135,7 +135,7 @@ export class ReportController {
         } catch (error: any) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
-                    message: error.messageEn,
+                    messageEn: error.messageEn,
                     messageHu: error.messageHu,
                 });
             }
@@ -196,7 +196,7 @@ export class ReportController {
         } catch (error: any) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
-                    message: error.messageEn,
+                    messageEn: error.messageEn,
                     messageHu: error.messageHu,
                 });
             }
@@ -235,7 +235,7 @@ export class ReportController {
         } catch (error: any) {
             if (error instanceof AppError) {
                 return res.status(error.statusCode).json({
-                    message: error.messageEn,
+                    messageEn: error.messageEn,
                     messageHu: error.messageHu,
                 });
             }
