@@ -156,7 +156,32 @@ export class ReportRepository implements IReportRepository {
         }
 
         report.status = status;
-        return await this.repo.save(report);
+        //save changes to db
+        await this.repo.save(report);
+
+        //fetch the report with relations, beacause of TypeORM save method doesnt return relations
+        return await this.repo.findOne({
+            where: { id: reportId },
+            relations: ['reportedBy', 'managedBy', 'category'],
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                status: true,
+                priority: true,
+                createdAt: true,
+                reportedBy: {
+                    username: true,
+                },
+                managedBy: {
+                    username: true,
+                    role: true,
+                },
+                category: {
+                    name: true,
+                },
+            },
+        });
     }
 
     async assignReport(
@@ -182,6 +207,55 @@ export class ReportRepository implements IReportRepository {
 
         report.status = ReportStatus.IN_PROGRESS;
         report.managedBy = { id: maintainerId } as any;
-        return await this.repo.save(report);
+        await this.repo.save(report);
+
+        return await this.repo.findOne({
+            where: { id: reportId },
+            relations: ['reportedBy', 'managedBy', 'category'],
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                status: true,
+                priority: true,
+                createdAt: true,
+                reportedBy: {
+                    username: true,
+                },
+                managedBy: {
+                    username: true,
+                    role: true,
+                },
+                category: {
+                    name: true,
+                },
+            },
+        });
+    }
+
+    async getReportById(reportId: string): Promise<Report | null> {
+        const report = await this.repo.findOne({
+            where: { id: reportId },
+            relations: ['reportedBy', 'managedBy', 'category'],
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                status: true,
+                priority: true,
+                createdAt: true,
+                reportedBy: {
+                    username: true,
+                },
+                managedBy: {
+                    username: true,
+                    role: true,
+                },
+                category: {
+                    name: true,
+                },
+            },
+        });
+        return report;
     }
 }

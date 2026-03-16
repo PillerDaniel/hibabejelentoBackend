@@ -15,7 +15,8 @@ const reportController: ReportController = new ReportController(
     container.getReportForMaintainerQueryHandler,
     container.createReportCommandHandler,
     container.editReportStatusCommandHandler,
-    container.assignReportToMaintainerCommandHandler
+    container.assignReportToMaintainerCommandHandler,
+    container.getReportByIdQueryHandler
 );
 
 const router = express.Router();
@@ -62,6 +63,15 @@ router.patch(
     roleMiddleware(['maintainer', 'admin']),
     async (req: Request, res: Response) => {
         reportController.assignReportToMaintainer(req, res);
+    }
+);
+
+router.get(
+    '/:id',
+    authMiddleware,
+    roleMiddleware(['user', 'maintainer', 'admin']),
+    async (req: Request, res: Response) => {
+        reportController.getReportById(req, res);
     }
 );
 

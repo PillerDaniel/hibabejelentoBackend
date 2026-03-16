@@ -22,6 +22,7 @@ import { AssignReportToMaintainerCommandHandler } from '../commands/report/Assig
 import { GetReportsByUserQueryHandler } from '../queries/report/GetReportsByUserQueryHandler';
 import { GetReportsForMaintainerQueryHandler } from '../queries/report/GetReportsForMaintainerQueryHandler';
 import { GetAllCategoryQueryHandler } from '../queries/category/GetAllCategoryQueryHandler';
+import { GetReportByIdQueryHandler } from '../queries/report/GetReportByIdQueryHandler';
 
 //IServices
 import { IEmailService } from '../../domain/IServices/IEmailService';
@@ -54,6 +55,7 @@ export class DIContainer {
         null;
     private _getAllCategoryQueryHandler: GetAllCategoryQueryHandler | null =
         null;
+    private _getReportByIdQueryHandler: GetReportByIdQueryHandler | null = null;
 
     //services
     private _emailService: IEmailService | null = null;
@@ -175,6 +177,14 @@ export class DIContainer {
             );
         }
         return this._getAllCategoryQueryHandler;
+    }
+    public get getReportByIdQueryHandler(): GetReportByIdQueryHandler {
+        if (!this._getReportByIdQueryHandler) {
+            this._getReportByIdQueryHandler = new GetReportByIdQueryHandler(
+                this.reportRepository
+            );
+        }
+        return this._getReportByIdQueryHandler;
     }
 
     //services

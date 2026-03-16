@@ -39,4 +39,6 @@ export interface IReportRepository {
         reportId: string,
         maintainerId: string
     ): Promise<Report | null>;
+
+    getReportById(reportId: string): Promise<Report | null>;
 }

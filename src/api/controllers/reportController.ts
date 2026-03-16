@@ -21,13 +21,17 @@ import { EditReportStatusCommandHandler } from '../../application/commands/repor
 import { AssignReportToMaintainerCommand } from '../../application/commands/report/AssignReportToMaintainerCommand';
 import { AssignReportToMaintainerCommandHandler } from '../../application/commands/report/AssignReportToMaintainerCommandHandler';
 
+import { GetReportByIdQuery } from '../../application/queries/report/GetReportByIdQuery';
+import { GetReportByIdQueryHandler } from '../../application/queries/report/GetReportByIdQueryHandler';
+
 export class ReportController {
     constructor(
         private readonly getReportByUserQueryHandler: GetReportsByUserQueryHandler,
         private readonly getReportForMaintainerQueryHandler: GetReportsForMaintainerQueryHandler,
         private readonly createReportCommandHandler: CreateReportCommandHandler,
         private readonly editReportStatusCommandHandler: EditReportStatusCommandHandler,
-        private readonly assignReportToMaintainerCommandHandler: AssignReportToMaintainerCommandHandler
+        private readonly assignReportToMaintainerCommandHandler: AssignReportToMaintainerCommandHandler,
+        private readonly getReportByIdQueryHandler: GetReportByIdQueryHandler
     ) {}
 
     async getReportsByUser(req: Request, res: Response) {
@@ -188,10 +192,7 @@ export class ReportController {
             return res.status(200).json({
                 messageEn: 'Report status updated successfully',
                 messageHu: 'Hibajegy státusza sikeresen frissítve.',
-                report: {
-                    id: result.id,
-                    status: result.status,
-                },
+                report: result,
             });
         } catch (error: any) {
             if (error instanceof AppError) {
@@ -228,9 +229,40 @@ export class ReportController {
             return res.status(200).json({
                 messageEn: 'Report assigned successfully',
                 messageHu: 'Hibajegy sikeresen hozzárendelve.',
-                report: {
-                    id: result.id,
-                },
+                report: result,
+            });
+        } catch (error: any) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    messageEn: error.messageEn,
+                    messageHu: error.messageHu,
+                });
+            }
+
+            return res.status(500).json({
+                message: 'Server error',
+                err: error.message,
+            });
+        }
+    }
+
+    async getReportById(req: Request, res: Response) {
+        try {
+            const reportId = req.params.id as string;
+            const result = await this.getReportByIdQueryHandler.handle(
+                new GetReportByIdQuery(reportId)
+            );
+
+            if (result === null) {
+                throw new AppError(
+                    404,
+                    'Report not found.',
+                    'Hibajegy nem található.'
+                );
+            }
+
+            return res.status(200).json({
+                report: result,
             });
         } catch (error: any) {
             if (error instanceof AppError) {
