@@ -48,5 +48,5 @@ export interface IReportRepository {
         description: string,
         priority: number,
         categoryId: string
-    ): Promise<Report | null>;
+    ): Promise<{ oldReport: Report; editedReport: Report } | null>;
 }

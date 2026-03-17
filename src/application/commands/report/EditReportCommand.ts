@@ -4,6 +4,7 @@ export class EditReportCommand {
         public title: string,
         public description: string,
         public priority: number,
-        public categoryId: string
+        public categoryId: string,
+        public editedByUserId: string
     ) {}
 }

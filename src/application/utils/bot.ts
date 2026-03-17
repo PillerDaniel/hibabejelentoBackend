@@ -8,6 +8,8 @@ import {
 
 const token = config.get<string>('DISCORD_TOKEN');
 
+import Report from '../../domain/models/Report';
+
 //channels
 const runnningChannelId = config.get<string>('RUNNING_CHANNEL');
 const logRequestsChannelId = config.get<string>('REQUEST_LOG_CHANNEL');
@@ -109,4 +111,73 @@ const logEmailError = async (title: string, err: any) => {
     }
 };
 
-export { startBot, logRequest, logEmailError };
+const logReportCreate = async (reportId: string, userId: string) => {
+    try {
+        const channel = await client.channels.fetch(
+            config.get<string>('REPORT_LOG_CHANNEL')
+        );
+        if (channel && channel.isTextBased()) {
+            const embed = new EmbedBuilder()
+                .setTitle(
+                    '<:botReportCreate:1483571036409692232>  New Report Created'
+                )
+                .addFields(
+                    { name: 'Report ID:', value: reportId, inline: false },
+                    { name: 'User ID:', value: userId, inline: false }
+                )
+                .setColor(0x3fff00)
+                .setTimestamp();
+            await (channel as TextChannel).send({ embeds: [embed] });
+        } else {
+            console.error(
+                'Log requests channel not found or is not text-based'
+            );
+        }
+    } catch (error) {
+        console.error('Error sending message to report log channel', error);
+    }
+};
+
+const logReportEdit = async (
+    oldReport: object,
+    newReport: object,
+    userId: string
+) => {
+    try {
+        const channel = await client.channels.fetch(
+            config.get<string>('REPORT_LOG_CHANNEL')
+        );
+
+        const newReportObj = newReport as Report;
+        const oldReportObj = oldReport as Report;
+
+        if (channel && channel.isTextBased()) {
+            const embed = new EmbedBuilder()
+                .setTitle('<:botReportEdit:1483573583933476974> Report Edited')
+                .addFields(
+                    {
+                        name: 'Old Report:',
+                        value: `Id: ${oldReportObj.id}\nTitle: ${oldReportObj.title}\nDescription: ${oldReportObj.description}\nPriority: ${oldReportObj.priority}\nCategoryId: ${oldReportObj.category.id}\nCategory: ${oldReportObj.category.name}\nStatus: ${oldReportObj.status}\nManaged By: ${oldReportObj.managedBy ? oldReportObj.managedBy.username : null}`,
+                        inline: false,
+                    },
+                    {
+                        name: 'Edited Report:',
+                        value: `Id: ${newReportObj.id}\nTitle: ${newReportObj.title}\nDescription: ${newReportObj.description}\nPriority: ${newReportObj.priority}\nCategoryId: ${newReportObj.category.id}\nCategory: ${newReportObj.category.name}\nStatus: ${newReportObj.status}\nManaged By: ${newReportObj.managedBy ? newReportObj.managedBy.username : null}`,
+                        inline: false,
+                    },
+                    { name: 'User ID:', value: userId, inline: false }
+                )
+                .setColor(0x1324c1)
+                .setTimestamp();
+            await (channel as TextChannel).send({ embeds: [embed] });
+        } else {
+            console.error(
+                'Log requests channel not found or is not text-based'
+            );
+        }
+    } catch (error) {
+        console.error('Error sending message to report log channel', error);
+    }
+};
+
+export { startBot, logRequest, logEmailError, logReportCreate, logReportEdit };

@@ -268,24 +268,8 @@ export class ReportRepository implements IReportRepository {
         description: string,
         priority: number,
         categoryId: string
-    ): Promise<Report | null> {
+    ): Promise<{ oldReport: Report; editedReport: Report } | null> {
         const report = await this.repo.findOne({
-            where: { id: reportId },
-            relations: ['reportedBy', 'managedBy', 'category'],
-        });
-
-        if (!report) {
-            return null;
-        }
-
-        report.title = title;
-        report.description = description;
-        report.priority = priority;
-        report.category = { id: categoryId } as any;
-
-        await this.repo.save(report);
-
-        return await this.repo.findOne({
             where: { id: reportId },
             relations: ['reportedBy', 'managedBy', 'category'],
             select: {
@@ -308,5 +292,43 @@ export class ReportRepository implements IReportRepository {
                 },
             },
         });
+
+        if (!report) {
+            return null;
+        }
+
+        const oldReport = JSON.parse(JSON.stringify(report));
+
+        report.title = title;
+        report.description = description;
+        report.priority = priority;
+        report.category = { id: categoryId } as any;
+
+        await this.repo.save(report);
+
+        const editedReport = await this.repo.findOne({
+            where: { id: reportId },
+            relations: ['reportedBy', 'managedBy', 'category'],
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                status: true,
+                priority: true,
+                createdAt: true,
+                reportedBy: {
+                    username: true,
+                },
+                managedBy: {
+                    username: true,
+                    role: true,
+                },
+                category: {
+                    id: true,
+                    name: true,
+                },
+            },
+        });
+        return { oldReport: oldReport, editedReport: editedReport! };
     }
 }

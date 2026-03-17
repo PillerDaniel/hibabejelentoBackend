@@ -302,7 +302,8 @@ export class ReportController {
                     title,
                     description,
                     priority,
-                    categoryId
+                    categoryId,
+                    req.user!.id
                 )
             );
 
