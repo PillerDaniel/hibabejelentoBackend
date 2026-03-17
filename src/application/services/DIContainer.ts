@@ -17,6 +17,7 @@ import { LogOutCommandHandler } from '../commands/user/LogOutCommandHandler';
 import { CreateReportCommandHandler } from '../commands/report/CreateReportCommandHandler';
 import { EditReportStatusCommandHandler } from '../commands/report/EditReportStatusCommandHandler';
 import { AssignReportToMaintainerCommandHandler } from '../commands/report/AssignReportToMaintainerCommandHandler';
+import { EditReportCommandHandler } from '../commands/report/EditReportCommandHandler';
 
 //query handlers
 import { GetReportsByUserQueryHandler } from '../queries/report/GetReportsByUserQueryHandler';
@@ -47,6 +48,7 @@ export class DIContainer {
         null;
     private _assignReportToMaintainerCommandHandler: AssignReportToMaintainerCommandHandler | null =
         null;
+    private _editReportCommandHandler: EditReportCommandHandler | null = null;
 
     //query handlers
     private _getReportByUserQueryHandler: GetReportsByUserQueryHandler | null =
@@ -153,6 +155,15 @@ export class DIContainer {
                 );
         }
         return this._assignReportToMaintainerCommandHandler;
+    }
+
+    public get editReportCommandHandler(): EditReportCommandHandler {
+        if (!this._editReportCommandHandler) {
+            this._editReportCommandHandler = new EditReportCommandHandler(
+                this.reportRepository
+            );
+        }
+        return this._editReportCommandHandler;
     }
 
     //query handlers

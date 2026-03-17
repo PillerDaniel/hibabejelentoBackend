@@ -178,6 +178,7 @@ export class ReportRepository implements IReportRepository {
                     role: true,
                 },
                 category: {
+                    id: true,
                     name: true,
                 },
             },
@@ -227,6 +228,7 @@ export class ReportRepository implements IReportRepository {
                     role: true,
                 },
                 category: {
+                    id: true,
                     name: true,
                 },
             },
@@ -252,10 +254,59 @@ export class ReportRepository implements IReportRepository {
                     role: true,
                 },
                 category: {
+                    id: true,
                     name: true,
                 },
             },
         });
         return report;
+    }
+
+    async editReport(
+        reportId: string,
+        title: string,
+        description: string,
+        priority: number,
+        categoryId: string
+    ): Promise<Report | null> {
+        const report = await this.repo.findOne({
+            where: { id: reportId },
+            relations: ['reportedBy', 'managedBy', 'category'],
+        });
+
+        if (!report) {
+            return null;
+        }
+
+        report.title = title;
+        report.description = description;
+        report.priority = priority;
+        report.category = { id: categoryId } as any;
+
+        await this.repo.save(report);
+
+        return await this.repo.findOne({
+            where: { id: reportId },
+            relations: ['reportedBy', 'managedBy', 'category'],
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                status: true,
+                priority: true,
+                createdAt: true,
+                reportedBy: {
+                    username: true,
+                },
+                managedBy: {
+                    username: true,
+                    role: true,
+                },
+                category: {
+                    id: true,
+                    name: true,
+                },
+            },
+        });
     }
 }

@@ -41,4 +41,12 @@ export interface IReportRepository {
     ): Promise<Report | null>;
 
     getReportById(reportId: string): Promise<Report | null>;
+
+    editReport(
+        reportId: string,
+        title: string,
+        description: string,
+        priority: number,
+        categoryId: string
+    ): Promise<Report | null>;
 }

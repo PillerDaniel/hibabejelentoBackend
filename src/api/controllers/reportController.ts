@@ -24,6 +24,9 @@ import { AssignReportToMaintainerCommandHandler } from '../../application/comman
 import { GetReportByIdQuery } from '../../application/queries/report/GetReportByIdQuery';
 import { GetReportByIdQueryHandler } from '../../application/queries/report/GetReportByIdQueryHandler';
 
+import { EditReportCommand } from '../../application/commands/report/EditReportCommand';
+import { EditReportCommandHandler } from '../../application/commands/report/EditReportCommandHandler';
+
 export class ReportController {
     constructor(
         private readonly getReportByUserQueryHandler: GetReportsByUserQueryHandler,
@@ -31,7 +34,8 @@ export class ReportController {
         private readonly createReportCommandHandler: CreateReportCommandHandler,
         private readonly editReportStatusCommandHandler: EditReportStatusCommandHandler,
         private readonly assignReportToMaintainerCommandHandler: AssignReportToMaintainerCommandHandler,
-        private readonly getReportByIdQueryHandler: GetReportByIdQueryHandler
+        private readonly getReportByIdQueryHandler: GetReportByIdQueryHandler,
+        private readonly editReportCommandHandler: EditReportCommandHandler
     ) {}
 
     async getReportsByUser(req: Request, res: Response) {
@@ -262,6 +266,57 @@ export class ReportController {
             }
 
             return res.status(200).json({
+                report: result,
+            });
+        } catch (error: any) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    messageEn: error.messageEn,
+                    messageHu: error.messageHu,
+                });
+            }
+
+            return res.status(500).json({
+                message: 'Server error',
+                err: error.message,
+            });
+        }
+    }
+
+    async editReport(req: Request, res: Response) {
+        try {
+            const reportId = req.params.id as string;
+            const { title, description, priority, categoryId } = req.body;
+
+            if (!title || !description || !priority || !categoryId) {
+                throw new AppError(
+                    400,
+                    'Missing required fields',
+                    'Minden mező kitöltése kötelező.'
+                );
+            }
+
+            const result = await this.editReportCommandHandler.handle(
+                new EditReportCommand(
+                    reportId,
+                    title,
+                    description,
+                    priority,
+                    categoryId
+                )
+            );
+
+            if (result === null) {
+                throw new AppError(
+                    404,
+                    'Report not found.',
+                    'Hibajegy nem található.'
+                );
+            }
+
+            return res.status(200).json({
+                messageEn: 'Report updated successfully',
+                messageHu: 'Hibajegy sikeresen frissítve.',
                 report: result,
             });
         } catch (error: any) {
