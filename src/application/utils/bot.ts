@@ -180,4 +180,69 @@ const logReportEdit = async (
     }
 };
 
-export { startBot, logRequest, logEmailError, logReportCreate, logReportEdit };
+const logReportStatusChange = async (
+    reportId: string,
+    userId: string,
+    status: string
+) => {
+    try {
+        const channel = await client.channels.fetch(
+            config.get<string>('REPORT_LOG_CHANNEL')
+        );
+
+        if (channel && channel.isTextBased()) {
+            const embed = new EmbedBuilder()
+                .setTitle(
+                    '<:botStatusChange:1483729122814595245> Report Status Changed'
+                )
+                .addFields(
+                    { name: 'Report ID:', value: reportId, inline: false },
+                    { name: 'New Status:', value: status, inline: false },
+                    { name: 'User ID:', value: userId, inline: false }
+                )
+                .setColor(0xffff00)
+                .setTimestamp();
+            await (channel as TextChannel).send({ embeds: [embed] });
+        }
+    } catch (error) {
+        console.error('Error sending message to report log channel', error);
+    }
+};
+
+const logReportAssign = async (reportId: string, userId: string) => {
+    try {
+        const channel = await client.channels.fetch(
+            config.get<string>('REPORT_LOG_CHANNEL')
+        );
+
+        if (channel && channel.isTextBased()) {
+            const embed = new EmbedBuilder()
+                .setTitle(
+                    '<:botReportAssign:1483733682056466595> Report Assigned'
+                )
+                .addFields(
+                    { name: 'Report ID:', value: reportId, inline: false },
+                    {
+                        name: 'Assigned To User ID:',
+                        value: userId,
+                        inline: false,
+                    }
+                )
+                .setColor(0xffff00)
+                .setTimestamp();
+            await (channel as TextChannel).send({ embeds: [embed] });
+        }
+    } catch (error) {
+        console.error('Error sending message to report log channel', error);
+    }
+};
+
+export {
+    startBot,
+    logRequest,
+    logEmailError,
+    logReportCreate,
+    logReportEdit,
+    logReportStatusChange,
+    logReportAssign,
+};
