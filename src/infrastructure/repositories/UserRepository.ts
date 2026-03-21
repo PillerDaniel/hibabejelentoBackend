@@ -11,7 +11,17 @@ export class UserRepository implements IUserRepository {
     }
 
     async getById(id: string): Promise<User | null> {
-        const user: User | null = await this.repo.findOneBy({ id });
+        const user = await this.repo.findOne({
+            where: { id },
+            select: {
+                username: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                createdAt: true,
+            },
+        });
+
         return user;
     }
 

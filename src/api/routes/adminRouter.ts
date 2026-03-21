@@ -9,7 +9,8 @@ import roleMiddleware from '../middlewares/roleMiddleware';
 import { AdminController } from '../controllers/adminController';
 
 const adminController: AdminController = new AdminController(
-    container.getMaintainersQueryHandler
+    container.getMaintainersQueryHandler,
+    container.getUserByIdQueryHandler
 );
 
 const router = express.Router();
@@ -20,6 +21,15 @@ router.get(
     roleMiddleware(['admin']),
     (req: Request, res: Response) => {
         adminController.getMaintainers(req, res);
+    }
+);
+
+router.get(
+    '/users/:id',
+    authMiddleware,
+    roleMiddleware(['admin']),
+    (req: Request, res: Response) => {
+        adminController.getUser(req, res);
     }
 );
 
