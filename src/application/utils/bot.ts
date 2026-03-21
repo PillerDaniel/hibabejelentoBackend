@@ -203,6 +203,10 @@ const logReportStatusChange = async (
                 .setColor(0xffff00)
                 .setTimestamp();
             await (channel as TextChannel).send({ embeds: [embed] });
+        } else {
+            console.error(
+                'Log requests channel not found or is not text-based'
+            );
         }
     } catch (error) {
         console.error('Error sending message to report log channel', error);
@@ -231,9 +235,42 @@ const logReportAssign = async (reportId: string, userId: string) => {
                 .setColor(0xffff00)
                 .setTimestamp();
             await (channel as TextChannel).send({ embeds: [embed] });
+        } else {
+            console.error(
+                'Log requests channel not found or is not text-based'
+            );
         }
     } catch (error) {
         console.error('Error sending message to report log channel', error);
+    }
+};
+
+const logRegister = async (userId: string, adminId: string) => {
+    try {
+        const channel = await client.channels.fetch(
+            config.get<string>('REGISTER_LOG_CHANNEL')
+        );
+        if (channel && channel.isTextBased()) {
+            const embed = new EmbedBuilder()
+                .setTitle('<:botRegister:1484714055079039056>  Account created')
+                .addFields(
+                    { name: 'UserId:', value: userId, inline: false },
+                    {
+                        name: 'AdminId:',
+                        value: adminId,
+                        inline: false,
+                    }
+                )
+                .setColor(0x13dd34)
+                .setTimestamp();
+            await (channel as TextChannel).send({ embeds: [embed] });
+        } else {
+            console.error(
+                'Log requests channel not found or is not text-based'
+            );
+        }
+    } catch (error) {
+        console.error('Error sending message to register log channel', error);
     }
 };
 
@@ -245,4 +282,5 @@ export {
     logReportEdit,
     logReportStatusChange,
     logReportAssign,
+    logRegister,
 };

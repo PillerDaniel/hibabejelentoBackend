@@ -22,12 +22,14 @@ export class AuthController {
     async register(req: Request, res: Response) {
         try {
             const { username, firstName, lastName, email } = req.body;
+            const adminId = req.user!.id;
 
             const cmd = new CreateUserCommand(
                 username,
                 firstName,
                 lastName,
-                email
+                email,
+                adminId
             );
 
             const user = await this.createUserCommandHandler.handle(cmd);

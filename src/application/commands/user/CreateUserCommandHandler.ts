@@ -6,7 +6,7 @@ import User from '../../../domain/models/User';
 import { PasswordGenerator } from '../../utils/passwordGenerator';
 import { EmailTemplateService } from '../../services/EmailTemplateService';
 
-import { logEmailError } from '../../utils/bot';
+import { logEmailError, logRegister } from '../../utils/bot';
 
 import { AppError } from '../../../domain/errors/AppError';
 
@@ -42,6 +42,7 @@ export class CreateUserCommandHandler {
         };
 
         const user = await this.userRepository.create(userData);
+        logRegister(user.id, cmd.adminId);
 
         try {
             const html = EmailTemplateService.getRegistrationEmailHtml(
