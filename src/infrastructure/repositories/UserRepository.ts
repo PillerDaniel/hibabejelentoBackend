@@ -1,6 +1,7 @@
 import { IUserRepository } from '../../domain/iRepositories/IUserRepository';
 import User from '../../domain/models/User';
 import dataSource from '../db/dataSource';
+import { UserRole } from '../../domain/enums/UserRole';
 export class UserRepository implements IUserRepository {
     private repo = dataSource.getRepository(User);
 
@@ -33,5 +34,20 @@ export class UserRepository implements IUserRepository {
     async findByUsername(username: string): Promise<User | null> {
         const user: User | null = await this.repo.findOneBy({ username });
         return user;
+    }
+
+    async getMaintainers(
+        page: number,
+        limit: number
+    ): Promise<{ maintainers: User[]; total: number }> {
+        const skip = (page - 1) * limit;
+        const [maintainers, total] = await this.repo.findAndCount({
+            where: { role: 'maintainer' as UserRole },
+            select: ['id', 'username', 'email', 'createdAt'],
+            order: { createdAt: 'DESC' },
+            skip,
+            take: limit,
+        });
+        return { maintainers: maintainers, total };
     }
 }
