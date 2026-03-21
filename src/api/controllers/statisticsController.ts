@@ -2,10 +2,14 @@
 import type { Request, Response } from 'express';
 
 import { GetOverallStatisticQueryHandler } from '../../application/queries/statistic/getOverallStatisticQueryHandler';
+import { GetStatisticForMaintainerQueryHandler } from '../../application/queries/statistic/getStatisticForMaintainerQueryHandler';
+
+import { GetStatisticForMaintainerQuery } from '../../application/queries/statistic/getStatisticForMaintainerQuery';
 
 export class StatisticsController {
     constructor(
-        private getOverallStatisticQueryHandler: GetOverallStatisticQueryHandler
+        private getOverallStatisticQueryHandler: GetOverallStatisticQueryHandler,
+        private getStatisticForMaintainerQueryHandler: GetStatisticForMaintainerQueryHandler
     ) {}
 
     async getStatistics(req: Request, res: Response) {
@@ -13,16 +17,43 @@ export class StatisticsController {
             const statistics =
                 await this.getOverallStatisticQueryHandler.handle();
             res.status(200).json(statistics);
-        } catch (error) {
-            res.status(500).send('Error occurred while fetching statistics');
+        } catch (error: any) {
+            return res.status(500).json({
+                message: 'Server error',
+                err: error.message,
+            });
         }
     }
 
     async getStatisticsForMaintainer(req: Request, res: Response) {
-        res.send('Statistics data for maintainer');
+        try {
+            const maintainerId = req.user!.id;
+            const statistics =
+                await this.getStatisticForMaintainerQueryHandler.handle(
+                    new GetStatisticForMaintainerQuery(maintainerId)
+                );
+            res.status(200).json(statistics);
+        } catch (error: any) {
+            return res.status(500).json({
+                message: 'Server error',
+                err: error.message,
+            });
+        }
     }
 
     async getStatisticsForAdmin(req: Request, res: Response) {
-        res.send('Statistics data for admin');
+        try {
+            const maintainerId = req.params.maintainerId as string;
+            const statistics =
+                await this.getStatisticForMaintainerQueryHandler.handle(
+                    new GetStatisticForMaintainerQuery(maintainerId)
+                );
+            res.status(200).json(statistics);
+        } catch (error: any) {
+            return res.status(500).json({
+                message: 'Server error',
+                err: error.message,
+            });
+        }
     }
 }

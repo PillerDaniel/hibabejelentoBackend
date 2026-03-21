@@ -9,7 +9,8 @@ import roleMiddleware from '../middlewares/roleMiddleware';
 import { StatisticsController } from '../controllers/statisticsController';
 
 const statisticsController: StatisticsController = new StatisticsController(
-    container.getOverallStatisticQueryHandler
+    container.getOverallStatisticQueryHandler,
+    container.getStatisticForMaintainerQueryHandler
 );
 
 const router = express.Router();
@@ -33,7 +34,7 @@ router.get(
 );
 
 router.get(
-    '/admin/:id',
+    '/admin/:maintainerId',
     authMiddleware,
     roleMiddleware(['admin']),
     (req: Request, res: Response) => {

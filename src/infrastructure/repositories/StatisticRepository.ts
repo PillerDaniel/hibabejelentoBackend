@@ -23,4 +23,22 @@ export class StatisticRepository implements IStatisticRepository {
             .orderBy('"totalReports"', 'DESC')
             .getRawMany();
     }
+
+    async getStatisticsForMaintainer(maintainerId: string): Promise<any> {
+        return await this.categoryRepo
+            .createQueryBuilder('category')
+            .leftJoin('category.reports', 'report')
+            .where('report.managedById = :maintainerId', { maintainerId })
+            .select('category.name', 'categoryName')
+            .addSelect('COUNT(report.id)::INTEGER', 'totalReports')
+            .addSelect(
+                'COUNT(report.id) FILTER (WHERE report.closedAt IS NOT NULL)::INTEGER',
+                'closedReports'
+            )
+            .addSelect('AVG(report.closedAt - report.createdAt)', 'averageTime')
+            .groupBy('category.id')
+            .addGroupBy('category.name')
+            .orderBy('"totalReports"', 'DESC')
+            .getRawMany();
+    }
 }
