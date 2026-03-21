@@ -3,12 +3,14 @@ import { IUserRepository } from '../../domain/iRepositories/IUserRepository';
 import { ISessionStore } from '../../domain/iRepositories/ISessionStore';
 import { IReportRepository } from '../../domain/iRepositories/IReportRepository';
 import { ICategoryRepository } from '../../domain/iRepositories/ICategoryRepository';
+import { IStatisticRepository } from '../../domain/iRepositories/IStatisticRepository';
 
 //repositories
 import { UserRepository } from '../../infrastructure/repositories/UserRepository';
 import { RedisSessionStore } from '../../infrastructure/RedisSessionStore';
 import { ReportRepository } from '../../infrastructure/repositories/ReportRepository';
 import { CategoryRepository } from '../../infrastructure/repositories/CategoryRepository';
+import { StatisticRepository } from '../../infrastructure/repositories/StatisticRepository';
 
 //command handlers
 import { CreateUserCommandHandler } from '../commands/user/CreateUserCommandHandler';
@@ -24,6 +26,7 @@ import { GetReportsByUserQueryHandler } from '../queries/report/GetReportsByUser
 import { GetReportsForMaintainerQueryHandler } from '../queries/report/GetReportsForMaintainerQueryHandler';
 import { GetAllCategoryQueryHandler } from '../queries/category/GetAllCategoryQueryHandler';
 import { GetReportByIdQueryHandler } from '../queries/report/GetReportByIdQueryHandler';
+import { GetOverallStatisticQueryHandler } from '../queries/statistic/getOverallStatisticQueryHandler';
 
 //IServices
 import { IEmailService } from '../../domain/IServices/IEmailService';
@@ -38,6 +41,8 @@ export class DIContainer {
     private _sessionStore: ISessionStore | null = null;
     private _reportRepository: IReportRepository | null = null;
     private _categoryRepository: ICategoryRepository | null = null;
+    private _statisticRepository: IStatisticRepository | null = null;
+
     //command handlers
     private _createUserCommandHandler: CreateUserCommandHandler | null = null;
     private _loginUserHandler: LoginUserCommandHandler | null = null;
@@ -58,6 +63,8 @@ export class DIContainer {
     private _getAllCategoryQueryHandler: GetAllCategoryQueryHandler | null =
         null;
     private _getReportByIdQueryHandler: GetReportByIdQueryHandler | null = null;
+    private _getOverallStatisticQueryHandler: GetOverallStatisticQueryHandler | null =
+        null;
 
     //services
     private _emailService: IEmailService | null = null;
@@ -98,6 +105,13 @@ export class DIContainer {
             this._sessionStore = new RedisSessionStore();
         }
         return this._sessionStore;
+    }
+
+    public get statisticRepository(): IStatisticRepository {
+        if (!this._statisticRepository) {
+            this._statisticRepository = new StatisticRepository();
+        }
+        return this._statisticRepository;
     }
 
     //command handlers
@@ -196,6 +210,13 @@ export class DIContainer {
             );
         }
         return this._getReportByIdQueryHandler;
+    }
+    public get getOverallStatisticQueryHandler(): GetOverallStatisticQueryHandler {
+        if (!this._getOverallStatisticQueryHandler) {
+            this._getOverallStatisticQueryHandler =
+                new GetOverallStatisticQueryHandler(this.statisticRepository);
+        }
+        return this._getOverallStatisticQueryHandler;
     }
 
     //services

@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser';
 import authRouter from './api/routes/authRouter';
 import reportRouter from './api/routes/reportRouter';
 import categoryRouter from './api/routes/categoryRouter';
+import statisticRouter from './api/routes/statisticRouter';
 
 //middlewares
 import logger from './api/middlewares/logger';
@@ -41,6 +42,7 @@ const startServer = async () => {
     app.use('/api/auth', authRouter);
     app.use('/api/reports', reportRouter);
     app.use('/api/categories', categoryRouter);
+    app.use('/api/statistics', statisticRouter);
 
     app.get('/api', (req: Request, res: Response) => {
         res.send('API running');

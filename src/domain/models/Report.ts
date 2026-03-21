@@ -32,6 +32,9 @@ export default class Report {
     @CreateDateColumn()
     createdAt!: Date;
 
+    @Column({ type: 'timestamp', nullable: true })
+    closedAt?: Date | null;
+
     @ManyToOne(() => Category, (category) => category.reports, {
         nullable: false,
     })

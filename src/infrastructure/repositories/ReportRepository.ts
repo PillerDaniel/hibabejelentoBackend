@@ -155,6 +155,10 @@ export class ReportRepository implements IReportRepository {
             report.managedBy = null;
         }
 
+        if (status === ReportStatus.DONE) {
+            report.closedAt = new Date();
+        }
+
         report.status = status;
         //save changes to db
         await this.repo.save(report);
