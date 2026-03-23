@@ -13,7 +13,8 @@ import roleMiddleware from '../middlewares/roleMiddleware';
 const authController: AuthController = new AuthController(
     container.createUserHandler,
     container.loginUserHandler,
-    container.logOutCommandHandler
+    container.logOutCommandHandler,
+    container.changeUserPasswordCommandHandler
 );
 
 const router = express.Router();
@@ -62,5 +63,41 @@ router.post('/logout', authMiddleware, async (req: Request, res: Response) => {
 router.get('/me', authMiddleware, async (req: Request, res: Response) => {
     return authController.me(req, res);
 });
+
+router.patch(
+    '/changepassword',
+    [
+        body('oldpassword').notEmpty().withMessage({
+            messageHu: 'A régi jelszó megadása kötelező.',
+            messageEn: 'Old password is required.',
+        }),
+        body('newpassword')
+            .isLength({ min: 8 })
+            .withMessage({
+                messageHu:
+                    'A jelszónak minimum 8 karakter hosszúnak kell lennie.',
+                messageEn: 'Password must be at least 8 characters long.',
+            })
+            .matches(/[A-Z]/)
+            .withMessage({
+                messageHu: 'A jelszónak legalább 1 nagybetűt tartalmazni kell.',
+                messageEn: 'Password must contain at least 1 uppercase letter.',
+            })
+            .matches(/\d/)
+            .withMessage({
+                messageHu: 'A jelszónak legalább 1 számot tartalmaznia kell.',
+                messageEn: 'Password must contain at least 1 digit.',
+            }),
+    ],
+    authMiddleware,
+    async (req: Request, res: Response) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        return authController.changePassword(req, res);
+    }
+);
 
 export default router;

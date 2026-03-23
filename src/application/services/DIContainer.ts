@@ -20,6 +20,7 @@ import { CreateReportCommandHandler } from '../commands/report/CreateReportComma
 import { EditReportStatusCommandHandler } from '../commands/report/EditReportStatusCommandHandler';
 import { AssignReportToMaintainerCommandHandler } from '../commands/report/AssignReportToMaintainerCommandHandler';
 import { EditReportCommandHandler } from '../commands/report/EditReportCommandHandler';
+import { ChangeUserPasswordCommandHandler } from '../commands/user/ChangeUserPasswordCommandHandler';
 
 //query handlers
 import { GetReportsByUserQueryHandler } from '../queries/report/GetReportsByUserQueryHandler';
@@ -57,6 +58,8 @@ export class DIContainer {
     private _assignReportToMaintainerCommandHandler: AssignReportToMaintainerCommandHandler | null =
         null;
     private _editReportCommandHandler: EditReportCommandHandler | null = null;
+    private _changeUserPasswordCommandHandler: ChangeUserPasswordCommandHandler | null =
+        null;
 
     //query handlers
     private _getReportByUserQueryHandler: GetReportsByUserQueryHandler | null =
@@ -186,6 +189,14 @@ export class DIContainer {
             );
         }
         return this._editReportCommandHandler;
+    }
+
+    public get changeUserPasswordCommandHandler(): ChangeUserPasswordCommandHandler {
+        if (!this._changeUserPasswordCommandHandler) {
+            this._changeUserPasswordCommandHandler =
+                new ChangeUserPasswordCommandHandler(this.userRepository);
+        }
+        return this._changeUserPasswordCommandHandler;
     }
 
     //query handlers

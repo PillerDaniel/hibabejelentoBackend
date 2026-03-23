@@ -61,4 +61,8 @@ export class UserRepository implements IUserRepository {
         });
         return { maintainers: maintainers, total };
     }
+
+    async changePassword(userId: string, newPassword: string): Promise<void> {
+        await this.repo.update({ id: userId }, { password: newPassword });
+    }
 }

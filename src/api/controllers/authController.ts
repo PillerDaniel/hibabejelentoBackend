@@ -11,6 +11,8 @@ import { LogOutCommand } from '../../application/commands/user/LogOutCommand';
 import { CreateUserCommandHandler } from '../../application/commands/user/CreateUserCommandHandler';
 import { LoginUserCommandHandler } from '../../application/commands/user/LoginUserCommandHandler';
 import { LogOutCommandHandler } from '../../application/commands/user/LogOutCommandHandler';
+import { ChangeUserPasswordCommand } from '../../application/commands/user/ChangeUserPasswordCommand';
+import { ChangeUserPasswordCommandHandler } from '../../application/commands/user/ChangeUserPasswordCommandHandler';
 
 import { logError } from '../../application/utils/bot';
 
@@ -18,7 +20,8 @@ export class AuthController {
     constructor(
         private readonly createUserCommandHandler: CreateUserCommandHandler,
         private readonly loginUserCommandHandler: LoginUserCommandHandler,
-        private readonly logOutCommandHandler: LogOutCommandHandler
+        private readonly logOutCommandHandler: LogOutCommandHandler,
+        private readonly changeUserPasswordCommandHandler: ChangeUserPasswordCommandHandler
     ) {}
 
     async register(req: Request, res: Response) {
@@ -145,6 +148,42 @@ export class AuthController {
             res.status(500).json({
                 messageHu: 'Hiba a felhasználó lekérdezése során.',
                 messageEn: 'Error retrieving user information.',
+                error: error.message,
+            });
+        }
+    }
+
+    async changePassword(req: Request, res: Response) {
+        try {
+            const { oldpassword, newpassword } = req.body;
+
+            const username = req.user!.username;
+
+            await this.changeUserPasswordCommandHandler.handle(
+                new ChangeUserPasswordCommand(
+                    username,
+                    oldpassword,
+                    newpassword
+                )
+            );
+
+            res.status(200).json({
+                messageHu: 'Jelszó sikeresen megváltoztatva.',
+                messageEn: 'Password changed successfully.',
+            });
+        } catch (error: any) {
+            if (error instanceof AppError) {
+                return res.status(error.statusCode).json({
+                    messageHu: error.messageHu,
+                    messageEn: error.messageEn,
+                });
+            }
+
+            logError(req.originalUrl, error.message);
+
+            res.status(500).json({
+                messageHu: 'Hiba a jelszó módosítása során.',
+                messageEn: 'Error during password change.',
                 error: error.message,
             });
         }
