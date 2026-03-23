@@ -17,7 +17,10 @@ export class StatisticRepository implements IStatisticRepository {
                 'COUNT(report.id) FILTER (WHERE report.closedAt IS NOT NULL)::INTEGER',
                 'closedReports'
             )
-            .addSelect('AVG(report.closedAt - report.createdAt)', 'averageTime')
+            .addSelect(
+                'JUSTIFY_INTERVAL(AVG(report.closedAt - report.createdAt))',
+                'averageTime'
+            )
             .groupBy('category.id')
             .addGroupBy('category.name')
             .orderBy('"totalReports"', 'DESC')
@@ -35,7 +38,10 @@ export class StatisticRepository implements IStatisticRepository {
                 'COUNT(report.id) FILTER (WHERE report.closedAt IS NOT NULL)::INTEGER',
                 'closedReports'
             )
-            .addSelect('AVG(report.closedAt - report.createdAt)', 'averageTime')
+            .addSelect(
+                'JUSTIFY_INTERVAL(AVG(report.closedAt - report.createdAt))',
+                'averageTime'
+            )
             .groupBy('category.id')
             .addGroupBy('category.name')
             .orderBy('"totalReports"', 'DESC')

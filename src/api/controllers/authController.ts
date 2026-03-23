@@ -12,6 +12,8 @@ import { CreateUserCommandHandler } from '../../application/commands/user/Create
 import { LoginUserCommandHandler } from '../../application/commands/user/LoginUserCommandHandler';
 import { LogOutCommandHandler } from '../../application/commands/user/LogOutCommandHandler';
 
+import { logError } from '../../application/utils/bot';
+
 export class AuthController {
     constructor(
         private readonly createUserCommandHandler: CreateUserCommandHandler,
@@ -45,6 +47,8 @@ export class AuthController {
                     messageEn: error.messageEn,
                 });
             }
+
+            logError(req.originalUrl, error.message);
 
             res.status(500).json({
                 messageHu: 'Hiba a regisztráció során.',
@@ -86,6 +90,9 @@ export class AuthController {
                     messageEn: error.messageEn,
                 });
             }
+
+            logError(req.originalUrl, error.message);
+
             res.status(500).json({
                 messageHu: 'Hiba a bejelentkezés során.',
                 messageEn: 'Error during login.',
@@ -113,6 +120,8 @@ export class AuthController {
                 });
             }
 
+            logError(req.originalUrl, error.message);
+
             res.status(500).json({
                 messageHu: 'Hiba a kijelentkezés során.',
                 messageEn: 'Error during logout.',
@@ -132,6 +141,7 @@ export class AuthController {
                 user: { username: req.user.username, role: req.user.role },
             });
         } catch (error: any) {
+            logError(req.originalUrl, error.message);
             res.status(500).json({
                 messageHu: 'Hiba a felhasználó lekérdezése során.',
                 messageEn: 'Error retrieving user information.',

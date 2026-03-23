@@ -274,6 +274,33 @@ const logRegister = async (userId: string, adminId: string) => {
     }
 };
 
+const logError = async (route: string, err: any) => {
+    try {
+        const channel = await client.channels.fetch(
+            config.get<string>('ERROR_LOG_CHANNEL')
+        );
+        if (channel && channel.isTextBased()) {
+            const embed = new EmbedBuilder()
+                .setTitle('<:botError:1485543767908810802>  Error Occurred')
+                .addFields(
+                    { name: 'Route:', value: route, inline: false },
+                    {
+                        name: 'Error:',
+                        value: err,
+                        inline: false,
+                    }
+                )
+                .setColor(0xff0000)
+                .setTimestamp();
+            await (channel as TextChannel).send({ embeds: [embed] });
+        } else {
+            console.error('Error log channel not found or is not text-based');
+        }
+    } catch (error) {
+        console.error('Error sending message to error log channel', error);
+    }
+};
+
 export {
     startBot,
     logRequest,
@@ -283,4 +310,5 @@ export {
     logReportStatusChange,
     logReportAssign,
     logRegister,
+    logError,
 };

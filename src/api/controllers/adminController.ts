@@ -5,6 +5,8 @@ import { AppError } from '../../domain/errors/AppError';
 import { GetMaintainersQueryHandler } from '../../application/queries/user/GetMaintainersQueryHandler';
 import { GetUserByIdQueryHandler } from '../../application/queries/user/GetUserbyIdQueryHandler';
 
+import { logError } from '../../application/utils/bot';
+
 export class AdminController {
     constructor(
         private readonly getMaintainersQueryHandler: GetMaintainersQueryHandler,
@@ -29,6 +31,8 @@ export class AdminController {
                 totalPages: Math.ceil(result.total / limit),
             });
         } catch (error: any) {
+            logError(req.originalUrl, error.message);
+
             return res.status(500).json({
                 message: 'Server error',
                 err: error.message,
@@ -59,6 +63,8 @@ export class AdminController {
                     messageHu: error.messageHu,
                 });
             }
+
+            logError(req.originalUrl, error.message);
 
             return res.status(500).json({
                 message: 'Server error',

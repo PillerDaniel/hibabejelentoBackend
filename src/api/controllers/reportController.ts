@@ -27,6 +27,8 @@ import { GetReportByIdQueryHandler } from '../../application/queries/report/GetR
 import { EditReportCommand } from '../../application/commands/report/EditReportCommand';
 import { EditReportCommandHandler } from '../../application/commands/report/EditReportCommandHandler';
 
+import { logError } from '../../application/utils/bot';
+
 export class ReportController {
     constructor(
         private readonly getReportByUserQueryHandler: GetReportsByUserQueryHandler,
@@ -66,6 +68,7 @@ export class ReportController {
                 totalPages: Math.ceil(result.total / limit),
             });
         } catch (error: any) {
+            logError(req.originalUrl, error.message);
             return res.status(500).json({
                 message: 'Server error',
                 err: error.message,
@@ -103,6 +106,7 @@ export class ReportController {
                 totalPages: Math.ceil(result.total / limit),
             });
         } catch (error: any) {
+            logError(req.originalUrl, error.message);
             return res.status(500).json({
                 message: 'Server error',
                 err: error.message,
@@ -147,6 +151,8 @@ export class ReportController {
                     messageHu: error.messageHu,
                 });
             }
+
+            logError(req.originalUrl, error.message);
 
             return res.status(500).json({
                 message: 'Server error',
@@ -206,6 +212,8 @@ export class ReportController {
                 });
             }
 
+            logError(req.originalUrl, error.message);
+
             return res.status(500).json({
                 message: 'Server error',
                 err: error.message,
@@ -243,6 +251,8 @@ export class ReportController {
                 });
             }
 
+            logError(req.originalUrl, error.message);
+
             return res.status(500).json({
                 message: 'Server error',
                 err: error.message,
@@ -275,6 +285,8 @@ export class ReportController {
                     messageHu: error.messageHu,
                 });
             }
+
+            logError(req.originalUrl, error.message);
 
             return res.status(500).json({
                 message: 'Server error',
@@ -327,6 +339,8 @@ export class ReportController {
                     messageHu: error.messageHu,
                 });
             }
+
+            logError(req.originalUrl, error.message);
 
             return res.status(500).json({
                 message: 'Server error',

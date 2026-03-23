@@ -6,6 +6,8 @@ import { GetStatisticForMaintainerQueryHandler } from '../../application/queries
 
 import { GetStatisticForMaintainerQuery } from '../../application/queries/statistic/getStatisticForMaintainerQuery';
 
+import { logError } from '../../application/utils/bot';
+
 export class StatisticsController {
     constructor(
         private getOverallStatisticQueryHandler: GetOverallStatisticQueryHandler,
@@ -18,6 +20,7 @@ export class StatisticsController {
                 await this.getOverallStatisticQueryHandler.handle();
             res.status(200).json(statistics);
         } catch (error: any) {
+            logError(req.originalUrl, error.message);
             return res.status(500).json({
                 message: 'Server error',
                 err: error.message,
@@ -32,8 +35,10 @@ export class StatisticsController {
                 await this.getStatisticForMaintainerQueryHandler.handle(
                     new GetStatisticForMaintainerQuery(maintainerId)
                 );
+
             res.status(200).json(statistics);
         } catch (error: any) {
+            logError(req.originalUrl, error.message);
             return res.status(500).json({
                 message: 'Server error',
                 err: error.message,
@@ -50,6 +55,7 @@ export class StatisticsController {
                 );
             res.status(200).json(statistics);
         } catch (error: any) {
+            logError(req.originalUrl, error.message);
             return res.status(500).json({
                 message: 'Server error',
                 err: error.message,
