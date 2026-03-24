@@ -14,4 +14,5 @@ export interface IUserRepository {
         limit: number
     ): Promise<{ maintainers: User[]; total: number }>;
     changePassword(userId: string, newPassword: string): Promise<void>;
+    getProfileData(userId: string): Promise<User | null>;
 }

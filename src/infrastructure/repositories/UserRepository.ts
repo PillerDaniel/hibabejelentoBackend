@@ -65,4 +65,19 @@ export class UserRepository implements IUserRepository {
     async changePassword(userId: string, newPassword: string): Promise<void> {
         await this.repo.update({ id: userId }, { password: newPassword });
     }
+
+    async getProfileData(userId: string): Promise<User | null> {
+        const user = await this.repo.findOne({
+            where: { id: userId },
+            select: {
+                username: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                role: true,
+            },
+        });
+
+        return user;
+    }
 }

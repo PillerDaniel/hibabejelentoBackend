@@ -31,6 +31,7 @@ import { GetOverallStatisticQueryHandler } from '../queries/statistic/getOverall
 import { GetStatisticForMaintainerQueryHandler } from '../queries/statistic/getStatisticForMaintainerQueryHandler';
 import { GetMaintainersQueryHandler } from '../queries/user/GetMaintainersQueryHandler';
 import { GetUserByIdQueryHandler } from '../queries/user/GetUserbyIdQueryHandler';
+import { GetUserProfileQueryHandler } from '../queries/user/GetUserProfileQueryHandler';
 
 //IServices
 import { IEmailService } from '../../domain/IServices/IEmailService';
@@ -76,6 +77,8 @@ export class DIContainer {
     private _getMaintainersQueryHandler: GetMaintainersQueryHandler | null =
         null;
     private _getUserByIdQueryHandler: GetUserByIdQueryHandler | null = null;
+    private _getUserProfileQueryHandler: GetUserProfileQueryHandler | null =
+        null;
 
     //services
     private _emailService: IEmailService | null = null;
@@ -261,6 +264,14 @@ export class DIContainer {
             );
         }
         return this._getUserByIdQueryHandler;
+    }
+    public get getUserProfileQueryHandler(): GetUserProfileQueryHandler {
+        if (!this._getUserProfileQueryHandler) {
+            this._getUserProfileQueryHandler = new GetUserProfileQueryHandler(
+                this.userRepository
+            );
+        }
+        return this._getUserProfileQueryHandler;
     }
 
     //services
