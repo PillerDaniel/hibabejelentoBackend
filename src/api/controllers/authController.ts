@@ -26,7 +26,7 @@ export class AuthController {
 
     async register(req: Request, res: Response) {
         try {
-            const { username, firstName, lastName, email } = req.body;
+            const { username, firstName, lastName, email, role } = req.body;
             const adminId = req.user!.id;
 
             const cmd = new CreateUserCommand(
@@ -34,6 +34,7 @@ export class AuthController {
                 firstName,
                 lastName,
                 email,
+                role,
                 adminId
             );
 

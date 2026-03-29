@@ -9,6 +9,7 @@ import { EmailTemplateService } from '../../services/EmailTemplateService';
 import { logEmailError, logRegister } from '../../utils/bot';
 
 import { AppError } from '../../../domain/errors/AppError';
+import { UserRole } from '../../../domain/enums/UserRole';
 
 export class CreateUserCommandHandler {
     constructor(
@@ -39,6 +40,7 @@ export class CreateUserCommandHandler {
             lastName: cmd.lastName,
             email: cmd.email,
             password: passwordHash,
+            role: cmd.role.toLowerCase() as UserRole,
         };
 
         const user = await this.userRepository.create(userData);

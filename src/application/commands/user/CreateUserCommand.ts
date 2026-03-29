@@ -4,6 +4,7 @@ export class CreateUserCommand {
         public firstName: string,
         public lastName: string,
         public email: string,
+        public role: string,
         public adminId: string
     ) {}
 }
