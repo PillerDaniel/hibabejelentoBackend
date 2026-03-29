@@ -16,7 +16,7 @@ export class EmailService implements IEmailService {
                 html,
             });
         } catch (error: any) {
-            throw new Error('Failed to send email', error);
+            throw new Error('Failed to send email');
         }
     }
 }
