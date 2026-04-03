@@ -9,11 +9,16 @@ import {
 const token = config.get<string>('DISCORD_TOKEN');
 
 import Report from '../../domain/models/Report';
+import { report } from 'node:process';
 
 //channels
 const runnningChannelId = config.get<string>('RUNNING_CHANNEL');
 const logRequestsChannelId = config.get<string>('REQUEST_LOG_CHANNEL');
 const emailErrorChannelId = config.get<string>('EMAILERROR_LOG_CHANNEL');
+const reportLogChannelId = config.get<string>('REPORT_LOG_CHANNEL');
+const errorLogChannelId = config.get<string>('ERROR_LOG_CHANNEL');
+const registerLogChannelId = config.get<string>('REGISTER_LOG_CHANNEL');
+const categoryLogChannelId = config.get<string>('CATEGORY_LOG_CHANNEL');
 
 const client = new Client({
     intents: [GatewayIntentBits.Guilds],
@@ -113,9 +118,7 @@ const logEmailError = async (title: string, err: any) => {
 
 const logReportCreate = async (reportId: string, userId: string) => {
     try {
-        const channel = await client.channels.fetch(
-            config.get<string>('REPORT_LOG_CHANNEL')
-        );
+        const channel = await client.channels.fetch(reportLogChannelId);
         if (channel && channel.isTextBased()) {
             const embed = new EmbedBuilder()
                 .setTitle(
@@ -144,9 +147,7 @@ const logReportEdit = async (
     userId: string
 ) => {
     try {
-        const channel = await client.channels.fetch(
-            config.get<string>('REPORT_LOG_CHANNEL')
-        );
+        const channel = await client.channels.fetch(reportLogChannelId);
 
         const newReportObj = newReport as Report;
         const oldReportObj = oldReport as Report;
@@ -186,9 +187,7 @@ const logReportStatusChange = async (
     status: string
 ) => {
     try {
-        const channel = await client.channels.fetch(
-            config.get<string>('REPORT_LOG_CHANNEL')
-        );
+        const channel = await client.channels.fetch(reportLogChannelId);
 
         if (channel && channel.isTextBased()) {
             const embed = new EmbedBuilder()
@@ -215,9 +214,7 @@ const logReportStatusChange = async (
 
 const logReportAssign = async (reportId: string, userId: string) => {
     try {
-        const channel = await client.channels.fetch(
-            config.get<string>('REPORT_LOG_CHANNEL')
-        );
+        const channel = await client.channels.fetch(reportLogChannelId);
 
         if (channel && channel.isTextBased()) {
             const embed = new EmbedBuilder()
@@ -247,9 +244,7 @@ const logReportAssign = async (reportId: string, userId: string) => {
 
 const logRegister = async (userId: string, adminId: string) => {
     try {
-        const channel = await client.channels.fetch(
-            config.get<string>('REGISTER_LOG_CHANNEL')
-        );
+        const channel = await client.channels.fetch(registerLogChannelId);
         if (channel && channel.isTextBased()) {
             const embed = new EmbedBuilder()
                 .setTitle('<:botRegister:1484714055079039056>  Account created')
@@ -276,9 +271,7 @@ const logRegister = async (userId: string, adminId: string) => {
 
 const logError = async (route: string, err: any) => {
     try {
-        const channel = await client.channels.fetch(
-            config.get<string>('ERROR_LOG_CHANNEL')
-        );
+        const channel = await client.channels.fetch(errorLogChannelId);
         if (channel && channel.isTextBased()) {
             const embed = new EmbedBuilder()
                 .setTitle('<:botError:1485543767908810802>  Error Occurred')
@@ -301,6 +294,33 @@ const logError = async (route: string, err: any) => {
     }
 };
 
+const logCategoryCreate = async (categoryId: string, userId: string) => {
+    try {
+        const channel = await client.channels.fetch(categoryLogChannelId);
+        if (channel && channel.isTextBased()) {
+            const embed = new EmbedBuilder()
+                .setTitle('<:botCategory:1489668807482937496> Category Created')
+                .addFields(
+                    { name: 'Category ID:', value: categoryId, inline: false },
+                    {
+                        name: 'User ID:',
+                        value: userId,
+                        inline: false,
+                    }
+                )
+                .setColor(0x13dd34)
+                .setTimestamp();
+            await (channel as TextChannel).send({ embeds: [embed] });
+        } else {
+            console.error(
+                'Category log channel not found or is not text-based'
+            );
+        }
+    } catch (error) {
+        console.error('Error sending message to category log channel', error);
+    }
+};
+
 export {
     startBot,
     logRequest,
@@ -311,4 +331,5 @@ export {
     logReportAssign,
     logRegister,
     logError,
+    logCategoryCreate,
 };

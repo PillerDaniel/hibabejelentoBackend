@@ -8,4 +8,10 @@ export class CategoryRepository implements ICategoryRepository {
     async getAllCategories(): Promise<Category[]> {
         return this.repo.find();
     }
+
+    async createCategory(name: string): Promise<Category> {
+        const category = this.repo.create({ name });
+        await this.repo.save(category);
+        return category;
+    }
 }
